@@ -1,26 +1,36 @@
 # GitHub Mobile – Protótipo de Fluxo Rápido
 
-Protótipo navegável desenvolvido para disciplina de Interação Humano-Computador com foco em testar fluxos críticos de um aplicativo GitHub Mobile voltado a colaboração rápida.
+> Protótipo navegável criado na disciplina de Interação Humano-Computador para validar fluxos críticos de colaboração no GitHub Mobile.
 
-## Objetivos
-- Validar se usuários reconhecem a hierarquia de navegação entre abas e subabas.
-- Avaliar fluidez das tarefas principais: criar repositório, revisar pull request, enviar arquivo e priorizar notificações.
-- Coletar percepções qualitativas para orientar ajustes de rótulos, feedback visual e distribuição de ações.
+## Visão Rápida
+| Aspecto | Detalhes |
+| --- | --- |
+| Público | Estudantes e desenvolvedores com experiência intermediária em Git |
+| Plataforma | Protótipo web responsivo (390x844) |
+| Foco | Criação de repositórios, revisão de PRs, upload rápido e priorização de alertas |
+| Status | Em avaliação com testes de usabilidade moderados |
 
-## Estrutura do Projeto
-- `index.html`: ponto de entrada do protótipo interativo.
-- `img/`: conjunto de imagens utilizadas nas telas.
-- `teste-usabilidade.md`: roteiro detalhado do teste de usabilidade.
+## Objetivos do Protótipo
+- Validar se usuários compreendem a hierarquia entre abas e subabas sem instrução adicional.
+- Medir fluidez e clareza nas ações principais (criar repositório, revisar PR, enviar arquivo, filtrar notificações).
+- Coletar feedback qualitativo para ajustes de rotulagem, feedback visual e distribuição de ações.
 
-## Como executar
-1. Abra `index.html` em um navegador baseado em Chromium ou Firefox.
-2. Ative o modo responsivo e ajuste a viewport para 390x844.
-3. Utilize cliques ou toques simulados para navegar entre abas e acionar interações.
+## Estrutura do Repositório
+| Caminho | Conteúdo |
+| --- | --- |
+| `index.html` | Ponto de entrada do protótipo interativo |
+| `img/` | Recursos visuais utilizados nas telas |
+| `teste-usabilidade.md` | Plano completo de preparação, execução e análise dos testes |
 
-## Testes de Usabilidade
-O arquivo `teste-usabilidade.md` descreve:
-- Perfil dos participantes, logística e preparação das sessões.
-- Seis tarefas principais com critérios de sucesso e perguntas de sondagem.
-- Métricas coletadas (tempo, sucesso, severidade Nielsen, NASA-TLX reduzida, confiança).
-- Processo de análise e priorização dos achados.
+## Como Executar o Protótipo
+1. Abra `index.html` em um navegador Chromium ou Firefox.
+2. Ative o modo responsivo e defina a viewport para 390x844.
+3. Interaja com cliques ou toques simulados para percorrer menus, subabas e fluxos principais.
+
+## Artefatos de Pesquisa
+- `teste-usabilidade.md`: roteiro com hipóteses, tarefas, métricas e plano de análise.
+- Planilha de métricas (não incluso): registrar tempos, sucessos, severidades e citações.
+- Gravações de sessão (opcional): evidenciar comportamentos e falas críticas.
+
+
 

@@ -1,82 +1,92 @@
 # Roteiro de Teste de Usabilidade
 
-## Contexto
-- **Protótipo:** GitHub Mobile - Fluxo de gerenciamento rápido.
-- **Objetivos principais:**
-  - Validar se usuários completam tarefas críticas (criar repositório, navegar em repositórios, atuar sobre pull requests, enviar arquivos e priorizar notificações).
-  - Identificar gargalos de navegação, rótulos confusos ou fluxos interrompidos.
-  - Levantar percepções iniciais sobre utilidade e confiança no protótipo.
-- **Hipóteses a validar:**
-  - Usuários reconhecem a hierarquia entre abas e subabas sem instruções adicionais.
-  - A ação de upload é percebida rapidamente dentro da subaba "Arquivos".
-  - Filtros de notificações comunicam prioridade de maneira clara.
-- **Perfil e número de participantes:** 5 a 7 estudantes e desenvolvedores (nível intermediário em Git) que realizaram colaboração em apps mobile nos últimos 6 meses.
+> Sessões moderadas para validar fluxos críticos do protótipo **GitHub Mobile – Fluxo de gerenciamento rápido**.
 
-## Logística
-- **Ambiente:** Notebook com `index.html` aberto em navegador Chromium ou Firefox em modo responsivo (390x844). Garantir conexão estável para captura de telas.
-- **Ferramentas de registro:** Software de gravação de tela/áudio (ex.: OBS), cronômetro visível para moderador, planilha de métricas compartilhada.
-- **Consentimento:** Coletar autorização para gravação e uso dos dados em relatório interno.
-- **Funções na sessão:** Moderador conduz, observador registra métricas e citações.
-- **Tempo estimado por sessão:** 35 a 40 minutos (5 min introdução, 25 min tarefas, 10 min pós-teste).
+## Visão Geral
+| Tema | Descrição |
+| --- | --- |
+| Objetivos | 1) Confirmar que tarefas críticas são concluídas sem fricção. 2) Detectar gargalos de navegação, rotulagem e feedback. 3) Medir confiança e esforço percebido. |
+| Hipóteses | (a) A hierarquia entre abas/subabas é intuitiva. (b) A ação de upload é facilmente encontrada em "Arquivos". (c) Filtros de notificações comunicam prioridade com clareza. |
+| Participantes | 5 a 7 estudantes/desenvolvedores com experiência intermediária em Git que colaboraram via apps mobile nos últimos 6 meses. |
+| Duração | ~40 minutos por sessão (5 introdução · 25 tarefas · 10 pós-teste). |
 
-## Preparação
-1. Validar que o protótipo está atualizado e funcional (links e interações simuladas).
-2. Abrir `index.html` no navegador e ajustar para modo responsivo 390x844.
-3. Revisar roteiro, perguntas de sondagem e critérios de sucesso antes da sessão.
-4. Testar gravação de tela/áudio e confirmar espaço de armazenamento disponível.
-5. Preparar formulário de consentimento e ficha do participante (dados demográficos, experiência prévia com Git e apps mobile).
-6. Lembrar o participante que se trata de um protótipo; partes podem ser não interativas e o foco é avaliar fluxo, não aparência.
-7. Solicitar pensamento em voz alta durante as tarefas e reforçar que o produto (não o participante) está sendo avaliado.
+## Logística da Sessão
+- **Ambiente:** Notebook com `index.html` aberto em navegador Chromium ou Firefox no modo responsivo 390x844.
+- **Registro:** Gravação de tela/áudio (ex.: OBS), cronômetro visível ao moderador e planilha de métricas compartilhada.
+- **Consentimento:** Coletar autorização de uso de dados e gravações em relatório interno.
+- **Equipe:** Moderador conduz e estimula pensamento em voz alta; observador registra métricas, citações e comportamentos.
+- **Backup:** Garantir conexão estável, testar protótipo antes da sessão e manter arquivos locais para contingência offline.
 
-## Tarefas
-Para cada tarefa, registrar tempo, sucesso e dificuldades. Fazer perguntas de sondagem apenas após o participante declarar fim da tentativa.
+## Preparação Passo a Passo
+1. Validar que o protótipo funciona (links, interações simuladas e feedback visual).
+2. Abrir `index.html`, ajustar viewport para 390x844 e ocultar elementos de navegador que distraiam.
+3. Revisar roteiro, perguntas de sondagem e critérios de sucesso; alinhar papéis de moderador e observador.
+4. Testar gravação (áudio/vídeo), garantir armazenamento livre e definir nomenclatura de arquivos.
+5. Separar formulários: consentimento, ficha do participante (demografia, experiência com Git e apps mobile) e planilha de notas.
+6. Reforçar ao participante que o foco é avaliar o produto; incentivar relato em voz alta durante tentativas.
+7. Registrar horário de início e fim da sessão para posterior organização de dados.
 
-1. **Criar um novo repositório**
-   - Instrução ao participante: "Você precisa iniciar um novo projeto para o seu time. Como faria isso pelo aplicativo?"
-   - Critérios de sucesso: abrir aba "Repositórios", tocar em "Novo", preencher formulário com dados plausíveis e confirmar.
-   - Perguntas de sondagem (se necessário): "O que esperava encontrar após tocar em Novo?"; "Algo dificultou entender os campos?"
+## Roteiro de Tarefas
+Para cada tarefa, iniciar o cronômetro quando a instrução terminar de ser lida. Evitar pistas durante a execução e usar as perguntas de sondagem apenas após a tentativa.
 
-2. **Ver detalhes de um repositório existente**
-   - Instrução: "Verifique as atividades recentes do repositório mobile-app."
-   - Critérios de sucesso: localizar repositório "mobile-app", acessar "Visão geral" e mencionar pelo menos um elemento de atividade recente.
-   - Sondagem: "A visão geral trouxe as informações que esperava?"; "O título da aba é claro para você?"
+### Tarefa 1 — Criar um novo repositório
+- **Instrução:** "Você precisa iniciar um novo projeto para o seu time. Como faria isso pelo aplicativo?"
+- **Critérios de sucesso:** Abrir aba "Repositórios", tocar em "Novo", preencher dados plausíveis e confirmar.
+- **Sondagem:** "O que esperava encontrar após tocar em Novo?" · "Algum campo gerou dúvida?"
 
-3. **Revisar um Pull Request**
-   - Instrução: "Há um pull request chamado hotfix/login que precisa de feedback. Encontre-o e registre um comentário."
-   - Critérios de sucesso: acessar subaba "Pull Requests", abrir "hotfix/login" e inserir comentário ou ação equivalente.
-   - Sondagem: "O fluxo de revisão esteve alinhado ao que você já usa?"; "Faltou alguma informação antes de comentar?"
+---
 
-4. **Enviar um arquivo para o repositório**
-   - Instrução: "Imagine que você precisa enviar rapidamente um arquivo para o repositório. Como faria isso pelo app?"
-   - Critérios de sucesso: acessar subaba "Arquivos", iniciar processo de upload e confirmar submissão (mesmo que simulado).
-   - Sondagem: "Onde esperava encontrar a opção de upload?"; "O feedback após o envio deixou claro o status?"
+### Tarefa 2 — Ver detalhes de um repositório existente
+- **Instrução:** "Verifique as atividades recentes do repositório mobile-app."
+- **Critérios de sucesso:** Localizar "mobile-app", acessar "Visão geral" e mencionar ao menos um elemento recente.
+- **Sondagem:** "A visão geral trouxe o que você esperava?" · "Os rótulos da aba fizeram sentido?"
 
-5. **Filtrar notificações**
-   - Instrução: "Você quer priorizar notificações críticas. Como localizaria rapidamente os alertas mais importantes?"
-   - Critérios de sucesso: abrir aba "Notificações", identificar e aplicar filtros de prioridade, apontar qual alerta teria prioridade.
-   - Sondagem: "Os filtros estavam claros?"; "Sentiu falta de algum critério de ordenação?"
+---
 
-6. **Tarefa exploratória opcional**
-   - Instrução: "Há algo que você gostaria de fazer neste app que não cobrimos? Tente realizá-lo rapidamente."
-   - Objetivo: captar oportunidades adicionais ou expectativas não atendidas.
+### Tarefa 3 — Revisar um Pull Request
+- **Instrução:** "Há um pull request chamado hotfix/login que precisa de feedback. Encontre-o e registre um comentário."
+- **Critérios de sucesso:** Acessar subaba "Pull Requests", abrir "hotfix/login" e adicionar comentário ou ação equivalente.
+- **Sondagem:** "O fluxo de revisão pareceu familiar?" · "Faltou alguma informação antes de comentar?"
 
-## Métricas e instrumentação
-- **Sucesso por tarefa:** Concluiu, parcialmente concluiu, não concluiu; registrar bloqueios e onde ocorreram.
-- **Tempo:** Cronometrar do início da leitura até a declaração de conclusão ou desistência.
-- **Erros e cliques extras:** Mapear desvios, caminhos alternativos e tentativas repetidas.
-- **Comentários espontâneos:** Anotar citações textuais relevantes (com carimbo de tempo).
-- **Severidade dos problemas:** Classificar segundo Nielsen (Baixa, Média, Alta, Crítica) e justificar brevemente.
-- **Carga percebida:** Aplicar escala NASA-TLX reduzida (esforço mental, esforço físico, frustração) ao final; se inviável, usar escala Likert 1-5 para esforço geral.
-- **Confiança:** Perguntar quão confiante ficaram em usar o app (escala 1-5).
+---
 
-## Pós-teste
-- **Entrevista breve:** Perguntar sensação geral de esforço, pontos positivos, momentos de frustração e funcionalidades ausentes.
-- **Perguntas orientadoras:** "O que mais surpreendeu positivamente?"; "Qual ação você gostaria que fosse mais simples?"; "Usaria esse app no trabalho atual? Por quê?"
-- **Prioridades de melhoria:** Pedir ao participante que destaque o problema mais crítico enfrentado.
-- **Agradecimento e próximos passos:** Informar como os resultados serão utilizados e prazo para retorno (se aplicável).
+### Tarefa 4 — Enviar um arquivo para o repositório
+- **Instrução:** "Imagine que você precisa enviar rapidamente um arquivo para o repositório. Como faria isso pelo app?"
+- **Critérios de sucesso:** Entrar em "Arquivos", iniciar upload e finalizar confirmação (mesmo que simulada).
+- **Sondagem:** "Onde imaginou que estaria a opção de upload?" · "O feedback após o envio ficou claro?"
 
-## Análise e próximos passos
-- Consolidar dados quantitativos e qualitativos na planilha compartilhada.
-- Identificar padrões de erro por tarefa e cruzar com severidade.
-- Priorizar ajustes com foco em problemas Alta/Crítica e tarefas não concluídas.
-- Compartilhar resumo executivo com equipe (máx. 1 página) e planejar rodada de validação após correções.
+---
+
+### Tarefa 5 — Filtrar notificações
+- **Instrução:** "Você quer priorizar notificações críticas. Como localizaria rapidamente os alertas mais importantes?"
+- **Critérios de sucesso:** Abrir "Notificações", identificar e aplicar filtros de prioridade, apontar qual alerta trataria primeiro.
+- **Sondagem:** "Os filtros estavam claros?" · "Sentiu falta de algum critério de ordenação?"
+
+---
+
+### Tarefa 6 — Exploração opcional
+- **Instrução:** "Há algo que você gostaria de fazer neste app que não cobrimos? Tente realizá-lo rapidamente."
+- **Objetivo:** Captar expectativas não mapeadas, oportunidades futuras e funcionalidades desejadas.
+
+## Métricas e Instrumentação
+| Métrica | Descrição |
+| --- | --- |
+| Sucesso por tarefa | Classificar como concluiu, parcialmente concluiu ou não concluiu; anotar bloqueios e momento exato. |
+| Tempo | Cronometrar da leitura da instrução até a conclusão ou desistência; registrar em segundos. |
+| Erros/Desvios | Mapear cliques extras, caminhos alternativos, tentativas repetidas e comentários sobre confusão. |
+| Citações e observações | Registrar falas textuais relevantes com carimbo de tempo e contexto. |
+| Severidade | Classificar problemas por Nielsen (Baixa, Média, Alta, Crítica) com breve justificativa. |
+| Carga percebida | Aplicar NASA-TLX reduzida (esforço mental, físico, frustração) ou escala Likert 1-5 se houver restrição de tempo. |
+| Confiança | Escala 1-5 perguntando: "Quão confiante você se sente usando este app após as tarefas?" |
+
+## Pós-Teste
+- **Entrevista rápida:** Sensação geral de esforço, pontos positivos, momentos de frustração e funcionalidades ausentes.
+- **Perguntas-guia:** "O que mais surpreendeu positivamente?" · "Qual ação gostaria que fosse mais simples?" · "Usaria o app hoje? Por quê?"
+- **Prioridades:** Solicitar que o participante aponte o problema mais crítico experienciado.
+- **Encerramento:** Agradecer participação e informar como insights serão tratados e quando resultados serão compartilhados.
+
+## Análise e Próximos Passos
+- Consolidar dados quantitativos e qualitativos na planilha compartilhada, destacando severidade e frequência por tarefa.
+- Identificar padrões de erro, desconfortos recorrentes e oportunidades emergentes da tarefa exploratória.
+- Priorizar correções com foco em issues de severidade Alta/Crítica e tarefas não concluídas.
+- Produzir resumo executivo (máx. 1 página) para o time e planejar nova rodada de validação após ajustes críticos.
