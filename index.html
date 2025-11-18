@@ -853,6 +853,12 @@
       width: 100%;
     }
 
+    .form-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     /* --- Estados de Sucesso --- */
     .success-state {
       background: #ffffff;
@@ -929,6 +935,44 @@
       color: #656d76;
       font-size: 13px;
       flex-wrap: wrap;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #57606a;
+      margin: 0 0 12px;
+    }
+
+    .breadcrumb-link {
+      background: none;
+      border: none;
+      padding: 0;
+      font-weight: 600;
+      color: #0969da;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb-link:hover {
+      color: #0550ae;
+      text-decoration: underline;
+    }
+
+    .breadcrumb-link:focus-visible {
+      outline: 2px solid #0969da;
+      outline-offset: 2px;
+    }
+
+    .breadcrumbs .separator {
+      color: #d0d7de;
+    }
+
+    .breadcrumbs .current {
+      font-weight: 600;
+      color: #1f2328;
     }
 
     .sub-tabs {
@@ -1385,6 +1429,29 @@
       z-index: 9;
     }
 
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 88px;
+      transform: translate(-50%, 12px);
+      background: rgba(15, 23, 42, 0.95);
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 30;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
     /* --- Media Query para Desktop (Simulação de Dispositivo) --- */
     @media (min-width: 768px) {
       body {
@@ -1419,6 +1486,10 @@
         max-height: calc(900px - 56px - 64px);
         /* Altura máxima interna */
       }
+
+      .toast {
+        bottom: 96px;
+      }
     }
   </style>
 </head>
@@ -1428,6 +1499,13 @@
   <div class="device">
     <!-- Barra Superior Fixa -->
     <header class="topbar" data-default-title="Repositórios">
+      <!-- Botão de retorno dinâmico -->
+      <button class="icon-button" aria-label="Voltar" data-nav-back hidden>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M7.78 3.22a.75.75 0 0 0-1.06 0l-4 4a.75.75 0 0 0 0 1.06l4 4a.75.75 0 1 0 1.06-1.06L4.31 8l3.47-3.47a.75.75 0 0 0 0-1.06Zm6 3.03H5.81a.75.75 0 0 0 0 1.5h7.97a.75.75 0 0 0 0-1.5Z" />
+        </svg>
+      </button>
       <!-- Botão de Menu (simulado) -->
       <button class="icon-button" aria-label="Abrir menu" data-sheet-target="account">
         <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
@@ -1837,7 +1915,8 @@
           </svg>
           <h2>Repositório criado</h2>
           <p>O repositório <strong>novo-repositorio</strong> está pronto.</p>
-          <button class="primary" data-screen="repo-details" data-nav-key="repos">Ir para repositório</button>
+          <button class="primary" data-screen="repo-details" data-nav-key="repos" data-return-subscreen="overview"
+            data-toast="Repositório criado" data-skip-history="true">Ir para repositório</button>
         </div>
       </section>
 
@@ -1861,6 +1940,12 @@
           <span class="stat-item" data-stat="stars">⭐ 128 favoritos</span>
           <span class="stat-item" data-stat="updated">Atualizado há 2 dias</span>
         </div>
+        <nav class="breadcrumbs" aria-label="Caminho de navegação">
+          <button class="breadcrumb-link" type="button" data-screen="repos" data-title="Repositórios"
+            data-nav-key="repos" data-breadcrumb-root>Repositórios</button>
+          <span class="separator">/</span>
+          <span class="current" data-breadcrumb-current>mobile-app</span>
+        </nav>
         <nav class="sub-tabs">
           <button class="sub-tab active" data-subscreen="overview">Visão geral</button>
           <!-- TAREFA 3: Ponto de entrada -->
@@ -1929,17 +2014,34 @@
       <!-- TELA 8: Submeter Comentário (TAREFA 3) -->
       <section class="screen" id="screen-submit-comment" data-title="Comentar PR">
         <form class="form">
+          <nav class="breadcrumbs" aria-label="Caminho de navegação">
+            <button class="breadcrumb-link" type="button" data-screen="repo-details" data-nav-key="repos"
+              data-return-subscreen="pulls" data-breadcrumb-comment-root>mobile-app</button>
+            <span class="separator">/</span>
+            <span class="current" data-breadcrumb-pr>hotfix/login</span>
+          </nav>
           <h2>Comentário em hotfix/login</h2>
           <textarea rows="6" placeholder="Digite seu feedback"></textarea>
           <!-- TAREFA 3: Clicar para publicar -->
-          <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos">Publicar
-            comentário</button>
+          <div class="form-actions">
+            <button type="button" class="secondary" data-screen="repo-details" data-nav-key="repos"
+              data-return-subscreen="pulls" data-skip-history="true">Cancelar</button>
+            <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos"
+              data-return-subscreen="pulls" data-toast="Comentário publicado" data-skip-history="true">Publicar
+              comentário</button>
+          </div>
         </form>
       </section>
 
       <!-- TELA 9: Submeter Arquivo (TAREFA 4) -->
       <section class="screen" id="screen-submit-file" data-title="Enviar arquivo">
         <form class="form">
+          <nav class="breadcrumbs" aria-label="Caminho de navegação">
+            <button class="breadcrumb-link" type="button" data-screen="repo-details" data-nav-key="repos"
+              data-return-subscreen="files" data-breadcrumb-upload-root>mobile-app</button>
+            <span class="separator">/</span>
+            <span class="current" data-breadcrumb-upload>Enviar arquivo</span>
+          </nav>
           <h2>Novo arquivo</h2>
           <div class="upload-sim">
             <input type="file" id="quick-upload" hidden>
@@ -1951,8 +2053,13 @@
             <input type="text" placeholder="ex: adiciona validação de login">
           </label>
           <!-- TAREFA 4: Clicar para submeter -->
-          <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos">Submeter para
-            main</button>
+          <div class="form-actions">
+            <button type="button" class="secondary" data-screen="repo-details" data-nav-key="repos"
+              data-return-subscreen="files" data-skip-history="true">Cancelar</button>
+            <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos"
+              data-return-subscreen="files" data-toast="Arquivo enviado" data-skip-history="true">Submeter para
+              main</button>
+          </div>
         </form>
       </section>
 
@@ -2126,6 +2233,8 @@
       </button>
     </nav>
 
+    <div class="toast" role="status" aria-live="polite" data-toast hidden></div>
+
     <!-- Modais (Sheets) -->
 
     <!-- Modal: Criar Novo (TAREFA 1) -->
@@ -2203,6 +2312,8 @@
     const device = document.querySelector(".device");
     const topbar = document.querySelector(".topbar");
     const topbarTitle = document.querySelector(".topbar-title");
+    const backButton = document.querySelector("[data-nav-back]");
+    const menuButton = document.querySelector("[data-sheet-target='account']");
     const screens = Array.from(document.querySelectorAll(".screen"));
     const bottomItems = Array.from(document.querySelectorAll(".bottom-item"));
     const subTabs = Array.from(document.querySelectorAll(".sub-tab"));
@@ -2215,6 +2326,7 @@
     const notificationPanels = Array.from(document.querySelectorAll("[data-filter-panel]"));
     const bottomNav = document.querySelector(".bottom-nav");
     const appRoot = document.getElementById("app");
+    const toast = document.querySelector("[data-toast]");
 
     // Seletores de Autenticação (não usados no fluxo principal, mas parte do código)
     const authScreen = document.getElementById("auth-screen");
@@ -2227,6 +2339,11 @@
     const quickUploadInput = document.querySelector("#quick-upload");
     const quickUploadLabel = document.querySelector("#screen-submit-file .filename");
     const uploadList = document.querySelector("#sub-files [data-upload-list]");
+
+    const rootScreens = new Set(["home", "repos", "explore", "pulls", "notifications", "profile"]);
+    const navigationStack = [];
+
+    let toastTimeout = null;
 
     // Constantes de Simulação de Storage
     const USER_STORAGE_KEY = "gh-mobile-user";
@@ -2245,6 +2362,12 @@
     const detailDescription = repoDetailSection?.querySelector(".repo-description");
     const detailStatStars = repoDetailSection?.querySelector("[data-stat='stars']");
     const detailStatUpdated = repoDetailSection?.querySelector("[data-stat='updated']");
+    const breadcrumbRoot = repoDetailSection?.querySelector("[data-breadcrumb-root]");
+    const breadcrumbCurrent = repoDetailSection?.querySelector("[data-breadcrumb-current]");
+    const breadcrumbCommentRoot = document.querySelector("[data-breadcrumb-comment-root]");
+    const breadcrumbUploadRoot = document.querySelector("[data-breadcrumb-upload-root]");
+    const breadcrumbPr = document.querySelector("[data-breadcrumb-pr]");
+    const breadcrumbUpload = document.querySelector("[data-breadcrumb-upload]");
     const repoList = document.querySelector(".repo-list[data-segment-panel='all']"); // Alvo específico
 
     // Seletores de Telas de Submissão
@@ -2259,6 +2382,7 @@
 
     // Estado Global Simulado
     let currentScreen = "repos"; // Tela inicial do protótipo
+    let currentNavKey = "repos";
     let currentRepo = {
       owner: "newgit",
       name: "mobile-app",
@@ -2281,24 +2405,92 @@
         return;
       }
 
+      const navKey = options.navKey ?? screenKey;
+      const title = options.title || target.dataset.title || topbar.dataset.defaultTitle || "GitHub";
+      const skipHistory = options.skipHistory === true;
+      const isRoot = rootScreens.has(screenKey);
+
+      if (!skipHistory && currentScreen && currentScreen !== screenKey) {
+        navigationStack.push({
+          screen: currentScreen,
+          title: topbarTitle?.textContent || "",
+          navKey: currentNavKey
+        });
+      }
+
+      if (isRoot) {
+        navigationStack.length = 0;
+      }
+
       // Esconde todas as telas e mostra a tela alvo
       screens.forEach(section => {
         section.classList.toggle("active", section === target);
       });
 
       // Atualiza o item ativo na barra de navegação inferior
-      const navKey = options.navKey ?? screenKey;
       bottomItems.forEach(item => {
         item.classList.toggle("active", item.dataset.screen === navKey);
       });
 
       // Atualiza o título na barra superior
-      const title = options.title || target.dataset.title || topbar.dataset.defaultTitle || "GitHub";
       if (topbarTitle) {
         topbarTitle.textContent = title;
       }
 
+      if (backButton) {
+        backButton.hidden = isRoot;
+        backButton.setAttribute("aria-hidden", isRoot ? "true" : "false");
+      }
+
+      if (menuButton) {
+        menuButton.hidden = !isRoot;
+        menuButton.setAttribute("aria-hidden", !isRoot ? "true" : "false");
+      }
+
       currentScreen = screenKey;
+      currentNavKey = navKey;
+    }
+
+    function hideToast() {
+      if (!toast) {
+        return;
+      }
+      toast.classList.remove("visible");
+      clearTimeout(toastTimeout);
+      toastTimeout = window.setTimeout(() => {
+        if (!toast.classList.contains("visible")) {
+          toast.hidden = true;
+          toast.textContent = "";
+        }
+      }, 200);
+    }
+
+    function showToast(message, duration = 2600) {
+      if (!toast || !message) {
+        return;
+      }
+      toast.textContent = message;
+      toast.hidden = false;
+      toast.classList.add("visible");
+      clearTimeout(toastTimeout);
+      toastTimeout = window.setTimeout(hideToast, duration);
+    }
+
+    function handleBackNavigation() {
+      const previous = navigationStack.pop();
+      if (previous) {
+        showScreen(previous.screen, {
+          title: previous.title,
+          navKey: previous.navKey,
+          skipHistory: true
+        });
+        return;
+      }
+      showScreen("repos", {
+        title: "Repositórios",
+        navKey: "repos",
+        skipHistory: true
+      });
     }
 
     /**
@@ -2598,6 +2790,16 @@
         detailStatUpdated.textContent = `Atualizado ${updatedValue}`;
       }
 
+      if (breadcrumbCurrent) {
+        breadcrumbCurrent.textContent = data.name;
+      }
+      if (breadcrumbCommentRoot) {
+        breadcrumbCommentRoot.textContent = data.name;
+      }
+      if (breadcrumbUploadRoot) {
+        breadcrumbUploadRoot.textContent = data.name;
+      }
+
       // Atualiza telas dependentes (Envio de Arquivo, Sucesso)
       if (submitFileHeading) submitFileHeading.textContent = `Enviar arquivo — ${data.name}`;
       if (submitFileButton) submitFileButton.textContent = `Submeter para ${data.name}`;
@@ -2613,7 +2815,7 @@
      * Manipula o clique em um card de repositório.
      * @param {HTMLElement} card - O elemento <li> do card clicado.
      */
-    function handleRepoCard(card) {
+    function handleRepoCard(card, options = {}) {
       const data = {
         owner: card.dataset.repoOwner,
         name: card.dataset.repoName,
@@ -2622,8 +2824,15 @@
         updated: card.dataset.repoUpdated
       };
       updateRepoDetails(data);
-      showScreen("repo-details", { title: data.name, navKey: "repos" });
-      setActiveSubScreen("overview"); // Sempre reseta para "Visão geral"
+      showScreen("repo-details", {
+        title: data.name,
+        navKey: "repos",
+        skipHistory: options.skipHistory === true
+      });
+      setActiveSubScreen(options.subscreen || "overview");
+      if (options.toast) {
+        showToast(options.toast);
+      }
     }
 
     /**
@@ -2666,7 +2875,13 @@
       const prTitle = target.dataset.prTitle || target.closest("[data-pr-title]")?.dataset.prTitle || currentPullRequest;
       currentPullRequest = prTitle;
       if (submitCommentHeading) {
-        submitCommentHeading.textContent = `Comentar ${prTitle}`;
+        submitCommentHeading.textContent = `Comentário em ${prTitle}`;
+      }
+      if (breadcrumbPr) {
+        breadcrumbPr.textContent = prTitle;
+      }
+      if (breadcrumbCommentRoot) {
+        breadcrumbCommentRoot.textContent = currentRepo.name;
       }
       showScreen("submit-comment", { title: "Comentar PR", navKey: "repos" });
     }
@@ -2679,17 +2894,28 @@
       const screenKey = trigger.dataset.screen;
       if (!screenKey) return;
 
+      const returnSubscreen = trigger.dataset.returnSubscreen;
+      const toastMessage = trigger.dataset.toast;
+      const skipHistory = trigger.dataset.skipHistory === "true";
+      let historyPopped = false;
+
+      const popHistoryIfNeeded = () => {
+        if (skipHistory && !historyPopped && navigationStack.length) {
+          navigationStack.pop();
+          historyPopped = true;
+        }
+      };
+
       // Lógica específica para o fluxo de SUBMISSÃO DE ARQUIVO
       if (trigger.closest("#screen-submit-file") && screenKey === "repo-details") {
         // Tenta processar o upload ANTES de navegar
         const form = trigger.closest("form");
         const success = processPendingUpload(form);
         if (!success) {
-          console.warn("Submissão falhou, permanecendo na tela.");
-          // Poderia-se impedir a navegação, mas para o protótipo, apenas logamos.
-          // return; // Descomente para impedir navegação se o upload falhar
+          showToast("Selecione um arquivo antes de enviar");
+          return;
         }
-        resetQuickUpload(); // Limpa o input
+        popHistoryIfNeeded();
       }
 
       // Fecha o sheet se a navegação partiu de dentro de um
@@ -2699,7 +2925,12 @@
 
       // Se o gatilho for um card de repositório (que tem data-repo-name)
       if (screenKey === "repo-details" && trigger.dataset.repoName) {
-        handleRepoCard(trigger);
+        popHistoryIfNeeded();
+        handleRepoCard(trigger, {
+          subscreen: returnSubscreen,
+          toast: toastMessage,
+          skipHistory
+        });
         return;
       }
 
@@ -2725,17 +2956,31 @@
           updated: trigger.dataset.repoUpdated || currentRepo.updated
         };
         updateRepoDetails(data);
-        showScreen("repo-details", { title: data.name, navKey: "repos" });
-        setActiveSubScreen("overview"); // Reseta para "Visão geral"
+        popHistoryIfNeeded();
+        showScreen("repo-details", { title: data.name, navKey: "repos", skipHistory });
+        setActiveSubScreen(returnSubscreen || "overview"); // Define aba
+        if (toastMessage) {
+          showToast(toastMessage);
+        }
         return;
       }
 
       // Navegação padrão
       const options = {
         title: trigger.dataset.title,
-        navKey: trigger.dataset.navKey
+        navKey: trigger.dataset.navKey,
+        skipHistory
       };
+      popHistoryIfNeeded();
       showScreen(screenKey, options);
+
+      if (screenKey === "repo-details" && returnSubscreen) {
+        setActiveSubScreen(returnSubscreen);
+      }
+
+      if (toastMessage) {
+        showToast(toastMessage);
+      }
     }
 
     /**
@@ -2910,6 +3155,10 @@
     // Manipulador de clique principal
     document.addEventListener("click", handleClick);
 
+    if (backButton) {
+      backButton.addEventListener("click", handleBackNavigation);
+    }
+
     // Manipulador das sub-abas
     if (repoDetailSection) {
       const subTabContainer = repoDetailSection.querySelector(".sub-tabs");
@@ -2948,7 +3197,7 @@
     }
 
     // Exibe a tela inicial ("Repositórios")
-    showScreen("repos", { title: "Repositórios" });
+    showScreen("repos", { title: "Repositórios", navKey: "repos", skipHistory: true });
     // Ativa a sub-aba inicial ("Visão geral")
     setActiveSubScreen("overview");
     // Carrega os dados do repositório padrão

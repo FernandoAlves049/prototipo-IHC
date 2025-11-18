@@ -25,6 +25,14 @@
 5. Separar formulários: consentimento, ficha do participante (demografia, experiência com Git e apps mobile) e planilha de notas.
 6. Reforçar ao participante que o foco é avaliar o produto; incentivar relato em voz alta durante tentativas.
 7. Registrar horário de início e fim da sessão para posterior organização de dados.
+8. Conferir o checklist de setup em `docs/checklist-setup.md` e validar que o kit da sessão está completo.
+9. Deixar aberto o script de condução (`docs/script-sessao.md`) para seguir a mesma cadência em todas as sessões.
+
+## Kit de Sessão
+- **Planilha de métricas:** `docs/planilha-metricas.csv` com cabeçalhos padronizados para sucesso, tempo, severidade, citações e escalas (NASA-TLX reduzida, confiança).
+- **Script da sessão:** `docs/script-sessao.md` com fala de abertura, instruções de condução e perguntas de sondagem.
+- **Checklist de setup:** `docs/checklist-setup.md` para garantir ambiente, protótipo e gravações prontos antes de cada rodada.
+- **Equipe:** `docs/equipe-sessao.md` lista papéis, contatos e observações para moderadores e observadores.
 
 ## Roteiro de Tarefas
 Para cada tarefa, iniciar o cronômetro quando a instrução terminar de ser lida. Evitar pistas durante a execução e usar as perguntas de sondagem apenas após a tentativa.
@@ -79,6 +87,8 @@ Para cada tarefa, iniciar o cronômetro quando a instrução terminar de ser lid
 | Carga percebida | Aplicar NASA-TLX reduzida (esforço mental, físico, frustração) ou escala Likert 1-5 se houver restrição de tempo. |
 | Confiança | Escala 1-5 perguntando: "Quão confiante você se sente usando este app após as tarefas?" |
 
+- **Registro em tempo real:** utilizar `docs/planilha-metricas.csv` para centralizar dados quantitativos e qualitativos durante a sessão.
+
 ## Pós-Teste
 - **Entrevista rápida:** Sensação geral de esforço, pontos positivos, momentos de frustração e funcionalidades ausentes.
 - **Perguntas-guia:** "O que mais surpreendeu positivamente?" · "Qual ação gostaria que fosse mais simples?" · "Usaria o app hoje? Por quê?"
@@ -86,7 +96,7 @@ Para cada tarefa, iniciar o cronômetro quando a instrução terminar de ser lid
 - **Encerramento:** Agradecer participação e informar como insights serão tratados e quando resultados serão compartilhados.
 
 ## Análise e Próximos Passos
-- Consolidar dados quantitativos e qualitativos na planilha compartilhada, destacando severidade e frequência por tarefa.
+- Consolidar dados quantitativos e qualitativos na planilha compartilhada (`docs/planilha-metricas.csv`), destacando severidade e frequência por tarefa.
 - Identificar padrões de erro, desconfortos recorrentes e oportunidades emergentes da tarefa exploratória.
 - Priorizar correções com foco em issues de severidade Alta/Crítica e tarefas não concluídas.
 - Produzir resumo executivo (máx. 1 página) para o time e planejar nova rodada de validação após ajustes críticos.
