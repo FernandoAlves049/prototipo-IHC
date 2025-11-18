@@ -1,70 +1,1462 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>GitHub Mobile — Protótipo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
+  <!-- Estilos CSS combinados -->
+  <style>
+    :root {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: #1f2328;
+      background-color: #f6f8fa;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f6f8fa;
+    }
+
+    .device {
+      width: 100%;
+      min-height: 100vh;
+      background: #ffffff;
+      /* Fundo branco principal para o app */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 56px;
+      background: #24292f;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      /* Fixa a barra no topo */
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      color: inherit;
+      padding: 6px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .icon-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .icon-button:focus-visible,
+    .bottom-item:focus-visible,
+    .primary:focus-visible,
+    .secondary:focus-visible,
+    .segmented:focus-visible,
+    .sub-tab:focus-visible {
+      outline: 2px solid #0969da;
+      outline-offset: 2px;
+    }
+
+    .icon-button.subtle {
+      color: #57606a;
+    }
+
+    .icon-button.subtle:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .octicon {
+      width: 20px;
+      height: 20px;
+    }
+
+    #app {
+      flex: 1;
+      background: #f6f8fa;
+
+      /* Foco visível para acessibilidade */
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      padding: 16px;
+      /* Altura calculada para permitir scroll sem cobrir barras */
+      height: calc(100vh - 56px - 64px);
+      overflow-y: auto;
+      background-color: #f6f8fa;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* --- Seção de Autenticação (Simulada) --- */
+    .auth-screen {
+      position: fixed;
+      inset: 0;
+      background: #0c1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      z-index: 40;
+    }
+
+    .auth-screen[hidden] {
+      display: none;
+    }
+
+    .auth-card {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+      max-width: 360px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .auth-brand {
+      background: #24292f;
+      color: #ffffff;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .auth-brand h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .auth-brand p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .auth-content {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .auth-form h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #1f2328;
+    }
+
+    .auth-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #24292f;
+    }
+
+    .auth-form input {
+      font: inherit;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #d0d7de;
+      background: #f6f8fa;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .auth-form input:focus {
+      outline: none;
+      border-color: #0969da;
+      box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2);
+    }
+
+    .auth-switch {
+      margin: 0;
+      font-size: 13px;
+      color: #57606a;
+    }
+
+    .link-button {
+      background: none;
+      border: none;
+      color: #0969da;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .link-button:hover {
+      color: #0550ae;
+      text-decoration: underline;
+    }
+
+    .auth-message {
+      min-height: 20px;
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #cf222e;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* --- Fim da Seção de Autenticação --- */
+
+
+    /* --- Estilos da Tela Home --- */
+    .home-hero {
+      background: linear-gradient(135deg, #24292f, #0c1117);
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .home-hero h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .home-hero-sub {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 14px;
+    }
+
+    .home-section {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #1f2328;
+    }
+
+    .section-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0969da;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .section-link:hover {
+      color: #0550ae;
+      text-decoration: underline;
+    }
+
+    .section-link:focus-visible {
+      outline: 2px solid #0969da;
+      outline-offset: 2px;
+    }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .home-tile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 14px 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .home-tile:hover {
+      border-color: #0969da;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .tile-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: transparent;
+    }
+
+    .tile-icon.green {
+      background: #2da44e;
+    }
+
+    .tile-icon.blue {
+      background: #0969da;
+    }
+
+    .tile-icon.purple {
+      background: #8250df;
+    }
+
+    .tile-icon.slate {
+      background: #6e7781;
+    }
+
+    .tile-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tile-body strong {
+      font-size: 15px;
+      color: #24292f;
+    }
+
+    .tile-body span {
+      font-size: 13px;
+      color: #57606a;
+    }
+
+    .home-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .home-card p {
+      margin: 0;
+    }
+
+    .muted {
+      color: #656d76;
+      font-size: 13px;
+    }
+
+    .home-card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .avatar-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .avatar-sm.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0969da;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .home-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .home-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 14px;
+      padding: 12px 16px;
+    }
+
+    .list-leading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .list-leading div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .home-actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .shortcut {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 12px 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .shortcut:hover {
+      border-color: #0969da;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .shortcut-icon {
+      font-size: 20px;
+    }
+
+    /* --- Estilos da Tela de Repositórios --- */
+    .search-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      padding: 6px 12px;
+    }
+
+    .search-input input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    .search-input input:focus {
+      outline: none;
+    }
+
+    .segmented {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 999px;
+      padding: 6px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #57606a;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .segmented:hover {
+      background-color: #eaeef2;
+    }
+
+    .segmented.active {
+      background: #0969da;
+      color: #ffffff;
+    }
+
+    .segmented.active:hover {
+      background: #0550ae;
+    }
+
+    .repo-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 80px;
+      /* Margem inferior para não cobrir com nav */
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .repo-card {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .repo-card:hover {
+      border-color: #0969da;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .repo-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .repo-title h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+      color: #1f2328;
+    }
+
+    .badge {
+      background: #ddf4d7;
+      color: #116329;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .badge.neutral {
+      background: #eaeef2;
+      color: #57606a;
+    }
+
+    .badge.info {
+      background: #ddf4ff;
+      color: #0969da;
+    }
+
+    .repo-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #57606a;
+    }
+
+    .repo-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      color: #656d76;
+    }
+
+    /* --- Estilos da Tela Explorar --- */
+    .explore-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .explore-header h2 {
+      margin: 0;
+      font-size: 22px;
+      color: #1f2328;
+    }
+
+    .explore-header p {
+      margin: 0;
+      color: #57606a;
+      font-size: 14px;
+    }
+
+    .discover-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .discover-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #d0d7de;
+      background: #ffffff;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .discover-card:hover {
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .discover-card strong {
+      display: block;
+      font-size: 16px;
+      color: #1f2328;
+    }
+
+    .discover-card span {
+      display: block;
+      font-size: 13px;
+      color: #57606a;
+    }
+
+    .discover-card .emoji {
+      font-size: 24px;
+    }
+
+    .discover-card.hot {
+      border-color: #fd8c73;
+    }
+
+    .discover-card.lists {
+      border-color: #d2a8ff;
+    }
+
+    .discover-card.hot:hover {
+      border-color: #e06c52;
+    }
+
+    .discover-card.lists:hover {
+      border-color: #b888e2;
+    }
+
+    .activity-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .activity-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .activity-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .activity-card {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #d0d7de;
+      background: #ffffff;
+    }
+
+    .activity-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+    }
+
+    .activity-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .activity-body>span {
+      color: #57606a;
+      font-size: 13px;
+    }
+
+    .activity-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .activity-tags span {
+      background: #eaeef2;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #57606a;
+    }
+
+    /* --- Estilos de Formulário --- */
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #d0d7de;
+    }
+
+    .form h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .form label,
+    .form fieldset {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 600;
+      color: #24292f;
+      font-size: 14px;
+    }
+
+    .form input,
+    .form textarea,
+    .form select {
+      font: inherit;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #d0d7de;
+      background: #f6f8fa;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form input:focus,
+    .form textarea:focus,
+    .form select:focus {
+      outline: none;
+      border-color: #0969da;
+      box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2);
+    }
+
+    .form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    fieldset {
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 0;
+    }
+
+    fieldset legend {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 4px;
+    }
+
+    .toggles label {
+      flex-direction: row;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    /* --- Estilos de Botões --- */
+    .primary,
+    .secondary {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .primary {
+      background: #238636;
+      color: #ffffff;
+    }
+
+    .primary:hover {
+      background: #1a6328;
+    }
+
+    .secondary {
+      background: #eaeef2;
+      color: #1f2328;
+    }
+
+    .secondary:hover {
+      background: #d0d7de;
+    }
+
+    .primary.ghost {
+      background: transparent;
+      color: #0969da;
+      border: 1px solid #0969da;
+    }
+
+    .primary.ghost:hover {
+      background: rgba(9, 105, 218, 0.08);
+    }
+
+    .primary.full,
+    .secondary.full {
+      width: 100%;
+    }
+
+    /* --- Estados de Sucesso --- */
+    .success-state {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 32px 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .success-state .octicon {
+      width: 48px;
+      height: 48px;
+      color: #238636;
+    }
+
+    /* --- Detalhes do Repositório --- */
+    .repo-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .owner-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #0969da;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .repo-heading {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .repo-heading .owner {
+      font-size: 13px;
+      color: #656d76;
+    }
+
+    .repo-heading h1 {
+      margin: 2px 0 0;
+      font-size: 18px;
+      color: #1f2328;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .repo-description {
+      margin: 0 0 12px;
+      padding: 0 4px;
+      color: #57606a;
+      font-size: 14px;
+    }
+
+    .repo-stats {
+      display: flex;
+      gap: 12px;
+      padding: 0 4px 16px;
+      color: #656d76;
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .sub-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      background: #eaeef2;
+      border-radius: 999px;
+      padding: 4px;
+      margin-bottom: 16px;
+    }
+
+    .sub-tab {
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      padding: 8px 12px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #57606a;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sub-tab.active {
+      background: #ffffff;
+      color: #1f2328;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+    }
+
+    .sub-screen {
+      display: none;
+    }
+
+    .sub-screen.active {
+      display: block;
+    }
+
+    .summary-card {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .activity {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 14px;
+      color: #57606a;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .dot.green {
+      background: #2da44e;
+    }
+
+    .dot.blue {
+      background: #0969da;
+    }
+
+    .dot.gray {
+      background: #8b949e;
+    }
+
+    .pull-card {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .status {
+      align-self: flex-start;
+      border-radius: 8px;
+      font-size: 12px;
+      padding: 4px 8px;
+      font-weight: 600;
+    }
+
+    .status.success {
+      background: #ddf4d7;
+      color: #116329;
+    }
+
+    .status.neutral {
+      background: #eaeef2;
+      color: #57606a;
+    }
+
+    .pull-card .primary {
+      margin-top: 4px;
+    }
+
+    /* --- Lista de Arquivos e Upload --- */
+    .file-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .file-list li {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .file-list strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .file-list span {
+      color: #656d76;
+      font-size: 13px;
+    }
+
+    .upload-sim {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px dashed #d0d7de;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .filename {
+      font-size: 14px;
+      color: #656d76;
+    }
+
+    .upload-list {
+      margin-top: 12px;
+    }
+
+    .upload-empty {
+      text-align: center;
+      color: #656d76;
+      font-size: 13px;
+      padding: 12px 0;
+    }
+
+    /* --- Tela de Notificações --- */
+    .filter-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .filter {
+      background: #eaeef2;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #57606a;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter:hover {
+      background-color: #d0d7de;
+    }
+
+    .filter.active {
+      background: #0969da;
+      color: #ffffff;
+    }
+
+    .filter.active:hover {
+      background: #0550ae;
+    }
+
+    .notifications {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .notification-card {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .notification-card:hover {
+      border-color: #0969da;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .notification-card p {
+      margin: 4px 0 0;
+      color: #57606a;
+      font-size: 14px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .pill.danger {
+      background: #ffebe9;
+      color: #cf222e;
+    }
+
+    .pill.warning {
+      background: #fff1c2;
+      color: #9a6700;
+    }
+
+    .pill.neutral {
+      background: #eaeef2;
+      color: #57606a;
+    }
+
+    /* --- Tela de Perfil --- */
+    .profile-header {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .avatar-xl {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: #0969da;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 24px;
+      margin: 0 auto;
+    }
+
+    .profile-list {
+      margin: 16px 0;
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .profile-list li {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+    }
+
+    /* --- Navegação Inferior --- */
+    .bottom-nav {
+      height: 64px;
+      background: #ffffff;
+      border-top: 1px solid #d0d7de;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+    }
+
+    .bottom-item {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #57606a;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .bottom-item:hover {
+      color: #0969da;
+    }
+
+    .bottom-item.active {
+      color: #0969da;
+    }
+
+    .bottom-item .octicon {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* --- Modais (Sheets) --- */
+    .sheet {
+      position: fixed;
+      left: 50%;
+      bottom: -100%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      /* Limita a largura em telas maiores */
+      background: transparent;
+      transition: bottom 0.3s ease;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .sheet.open {
+      bottom: 0;
+      pointer-events: auto;
+    }
+
+    .sheet-body {
+      background: #ffffff;
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      box-shadow: 0 -12px 32px rgba(15, 23, 42, 0.2);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sheet-body h3 {
+      margin: 0;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .sheet-body ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sheet-body li {
+      padding: 12px;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      background: #f6f8fa;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .sheet-body li:hover {
+      background: #eaeef2;
+      border-color: #0969da;
+    }
+
+    .sheet-body .hint {
+      font-size: 12px;
+      color: #656d76;
+      font-weight: 400;
+    }
+
+    .profile-inline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-inline .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #0969da;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .sheet-suggestions {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sheet-suggestions li {
+      padding: 12px;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      background: #f6f8fa;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .sheet-suggestions li:hover {
+      background: #eaeef2;
+      border-color: #0969da;
+    }
+
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 9;
+    }
+
+    /* --- Media Query para Desktop (Simulação de Dispositivo) --- */
+    @media (min-width: 768px) {
+      body {
+        padding: 24px 0;
+        display: flex;
+        justify-content: center;
+        background: #0c1117;
+      }
+
+      .device {
+        max-width: 420px;
+        min-height: 80vh;
+        /* Altura mínima no desktop */
+        max-height: 900px;
+        /* Altura máxima */
+        border-radius: 32px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .sheet {
+        width: 420px;
+        /* Garante que o sheet não ultrapasse o device */
+      }
+
+      .screen {
+        /* Ajusta a altura da tela no desktop */
+        height: calc(100vh - 168px);
+        min-height: 500px;
+        /* Altura mínima interna */
+        max-height: calc(900px - 56px - 64px);
+        /* Altura máxima interna */
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div id="auth-screen" class="auth-screen" hidden>
-    <div class="auth-card">
-      <div class="auth-brand">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.6c.4.08.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.55 7.55 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>
-        <h1>GitHub Mobile</h1>
-        <p>Acesse seu fluxo em qualquer lugar.</p>
-      </div>
-      <div class="auth-content">
-        <form id="login-form" class="auth-form" autocomplete="on">
-          <h2>Entrar</h2>
-          <label>Usuário
-            <input type="text" name="username" required autocomplete="username" placeholder="ex: newgit">
-          </label>
-          <label>Senha
-            <input type="password" name="password" required autocomplete="current-password" placeholder="Digite sua senha">
-          </label>
-          <button type="submit" class="primary full">Entrar</button>
-          <p class="auth-switch">Não tem conta? <button type="button" class="link-button" data-auth-toggle="register">Criar agora</button></p>
-        </form>
-
-        <form id="register-form" class="auth-form hidden" autocomplete="off">
-          <h2>Criar conta</h2>
-          <label>Usuário
-            <input type="text" name="newUsername" required placeholder="Escolha um usuário">
-          </label>
-          <label>Senha
-            <input type="password" name="newPassword" required placeholder="Crie uma senha">
-          </label>
-          <label>Confirmar senha
-            <input type="password" name="confirmPassword" required placeholder="Repita a senha">
-          </label>
-          <button type="submit" class="primary full">Registrar</button>
-          <p class="auth-switch">Já possui conta? <button type="button" class="link-button" data-auth-toggle="login">Fazer login</button></p>
-        </form>
-        <p id="auth-message" class="auth-message" role="alert"></p>
-      </div>
-    </div>
-  </div>
-
+  <!-- Simulação de dispositivo móvel -->
   <div class="device">
     <!-- Barra Superior Fixa -->
     <header class="topbar" data-default-title="Repositórios">
+      <!-- Botão de Menu (simulado) -->
       <button class="icon-button" aria-label="Abrir menu" data-sheet-target="account">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1.75 3.5h12.5a.75.75 0 0 0 0-1.5H1.75a.75.75 0 0 0 0 1.5Zm12.5 4H1.75a.75.75 0 0 0 0 1.5h12.5a.75.75 0 0 0 0-1.5Zm0 5.5H1.75a.75.75 0 0 0 0 1.5h12.5a.75.75 0 0 0 0-1.5Z"/></svg>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M1.75 3.5h12.5a.75.75 0 0 0 0-1.5H1.75a.75.75 0 0 0 0 1.5Zm12.5 4H1.75a.75.75 0 0 0 0 1.5h12.5a.75.75 0 0 0 0-1.5Zm0 5.5H1.75a.75.75 0 0 0 0 1.5h12.5a.75.75 0 0 0 0-1.5Z" />
+        </svg>
       </button>
       <span class="topbar-title">Repositórios</span>
+      <!-- Ações da Barra Superior -->
       <div class="topbar-actions">
         <button class="icon-button" aria-label="Buscar" data-sheet-target="search">
-          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.75 10.5h-.79l-.27-.26A5.471 5.471 0 0 0 12.5 6.25 5.5 5.5 0 1 0 7 11.75a5.47 5.47 0 0 0 3.99-1.78l.26.27v.79l4.25 4.24L16 14.75l-4.25-4.25Zm-4.75 0A4.25 4.25 0 1 1 11.25 6.25 4.25 4.25 0 0 1 7 10.5Z"/></svg>
+          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor"
+              d="M11.75 10.5h-.79l-.27-.26A5.471 5.471 0 0 0 12.5 6.25 5.5 5.5 0 1 0 7 11.75a5.47 5.47 0 0 0 3.99-1.78l.26.27v.79l4.25 4.24L16 14.75l-4.25-4.25Zm-4.75 0A4.25 4.25 0 1 1 11.25 6.25 4.25 4.25 0 0 1 7 10.5Z" />
+          </svg>
         </button>
+        <!-- TAREFA 1: Ponto de entrada -->
         <button class="icon-button" aria-label="Criar novo" data-sheet-target="create-menu">
-          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.75a.75.75 0 0 1 .75.75v4.75h4.75a.75.75 0 0 1 0 1.5H8.75v4.75a.75.75 0 0 1-1.5 0V8.75H2.5a.75.75 0 0 1 0-1.5h4.75V2.5A.75.75 0 0 1 8 1.75Z"/></svg>
+          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor"
+              d="M8 1.75a.75.75 0 0 1 .75.75v4.75h4.75a.75.75 0 0 1 0 1.5H8.75v4.75a.75.75 0 0 1-1.5 0V8.75H2.5a.75.75 0 0 1 0-1.5h4.75V2.5A.75.75 0 0 1 8 1.75Z" />
+          </svg>
         </button>
       </div>
     </header>
+
     <!-- Conteúdo Principal (Telas) -->
     <main id="app">
-      
+
       <!-- TELA 1: Início (Home) -->
       <section class="screen" id="screen-home" data-title="Início">
         <header class="home-hero">
@@ -76,7 +1468,10 @@
           <div class="section-header">
             <h2>Meu Trabalho</h2>
             <button class="icon-button subtle" type="button" aria-label="Ver mais opções">
-              <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M6.75 8a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5.25 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM8 9.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z"/></svg>
+              <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+                <path fill="currentColor"
+                  d="M6.75 8a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5.25 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM8 9.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z" />
+              </svg>
             </button>
           </div>
           <div class="home-grid">
@@ -118,7 +1513,8 @@
           </div>
           <div class="home-card">
             <p><strong>Revisor Automático</strong></p>
-            <p class="muted">Monitora novos pull requests no repositório <strong>mobile-app</strong> e sinaliza revisões urgentes.</p>
+            <p class="muted">Monitora novos pull requests no repositório <strong>mobile-app</strong> e sinaliza revisões
+              urgentes.</p>
             <div class="home-card-actions">
               <button class="primary ghost" type="button">Ver detalhes</button>
               <button class="secondary" type="button">Pausar</button>
@@ -134,7 +1530,7 @@
           <ul class="home-list">
             <li>
               <div class="list-leading">
-                <img class="avatar-sm" src="https://avatars.githubusercontent.com/u/9919?v=4" alt="Avatar fernando">
+                <img class="avatar-sm" src="https://placehold.co/40x40/6e5494/ffffff?text=F" alt="Avatar fernando">
                 <div>
                   <strong>fernandooliveira</strong>
                   <span class="muted">labirinto_de_creta</span>
@@ -185,7 +1581,10 @@
       <section class="screen active" id="screen-repos" data-title="Repositórios">
         <div class="search-row">
           <div class="search-input">
-            <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.75 10.5h-.79l-.27-.26A5.471 5.471 0 0 0 12.5 6.25 5.5 5.5 0 1 0 7 11.75a5.47 5.47 0 0 0 3.99-1.78l.26.27v.79l4.25 4.24L16 14.75l-4.25-4.25Zm-4.75 0A4.25 4.25 0 1 1 11.25 6.25 4.25 4.25 0 0 1 7 10.5Z"/></svg>
+            <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+              <path fill="currentColor"
+                d="M11.75 10.5h-.79l-.27-.26A5.471 5.471 0 0 0 12.5 6.25 5.5 5.5 0 1 0 7 11.75a5.47 5.47 0 0 0 3.99-1.78l.26.27v.79l4.25 4.24L16 14.75l-4.25-4.25Zm-4.75 0A4.25 4.25 0 1 1 11.25 6.25 4.25 4.25 0 0 1 7 10.5Z" />
+            </svg>
             <input type="search" placeholder="Buscar repositórios" aria-label="Buscar repositórios">
           </div>
           <button class="segmented active" data-segment-key="all">Todos</button>
@@ -195,7 +1594,9 @@
         <div class="repo-panels">
           <ul class="repo-list" data-segment-panel="all">
             <!-- TAREFA 2: Clicar aqui -->
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="mobile-app" data-repo-description="App mobile para revisão rápida de pull requests." data-repo-stars="128" data-repo-updated="há 2 dias" data-repo-badge="PR 3">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="mobile-app"
+              data-repo-description="App mobile para revisão rápida de pull requests." data-repo-stars="128"
+              data-repo-updated="há 2 dias" data-repo-badge="PR 3">
               <div class="repo-title">
                 <h2>newgit/mobile-app</h2>
                 <span class="badge">PR 3</span>
@@ -206,7 +1607,9 @@
                 <span class="meta-item">★ 128</span>
               </div>
             </li>
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="web-dashboard" data-repo-description="Painel administrativo com métricas de projeto." data-repo-stars="64" data-repo-updated="há 3 dias" data-repo-badge="Issues 5">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="web-dashboard"
+              data-repo-description="Painel administrativo com métricas de projeto." data-repo-stars="64"
+              data-repo-updated="há 3 dias" data-repo-badge="Issues 5">
               <div class="repo-title">
                 <h2>newgit/web-dashboard</h2>
                 <span class="badge neutral">Issues 5</span>
@@ -217,7 +1620,9 @@
                 <span class="meta-item">★ 64</span>
               </div>
             </li>
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="docs-site" data-repo-description="Documentação pública dos projetos e guidelines." data-repo-stars="22" data-repo-updated="há 5 dias" data-repo-badge="Docs">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="docs-site"
+              data-repo-description="Documentação pública dos projetos e guidelines." data-repo-stars="22"
+              data-repo-updated="há 5 dias" data-repo-badge="Docs">
               <div class="repo-title">
                 <h2>newgit/docs-site</h2>
                 <span class="badge info">Docs</span>
@@ -231,7 +1636,9 @@
           </ul>
 
           <ul class="repo-list hidden" data-segment-panel="owned">
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="infra-pipeline" data-repo-description="Scripts para deploy automatizado em staging." data-repo-stars="8" data-repo-updated="há 6 horas" data-repo-badge="CI">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="infra-pipeline"
+              data-repo-description="Scripts para deploy automatizado em staging." data-repo-stars="8"
+              data-repo-updated="há 6 horas" data-repo-badge="CI">
               <div class="repo-title">
                 <h2>newgit/infra-pipeline</h2>
                 <span class="badge info">CI</span>
@@ -242,7 +1649,9 @@
                 <span class="meta-item">★ 8</span>
               </div>
             </li>
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="design-kit" data-repo-description="Componentes compartilhados de UI para o ecossistema mobile." data-repo-stars="31" data-repo-updated="há 1 dia" data-repo-badge="UI">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="design-kit"
+              data-repo-description="Componentes compartilhados de UI para o ecossistema mobile." data-repo-stars="31"
+              data-repo-updated="há 1 dia" data-repo-badge="UI">
               <div class="repo-title">
                 <h2>newgit/design-kit</h2>
                 <span class="badge neutral">UI</span>
@@ -253,7 +1662,9 @@
                 <span class="meta-item">★ 31</span>
               </div>
             </li>
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="analytics-service" data-repo-description="Serviço Node para processamento de eventos em tempo real." data-repo-stars="18" data-repo-updated="há 4 dias" data-repo-badge="API">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="newgit" data-repo-name="analytics-service"
+              data-repo-description="Serviço Node para processamento de eventos em tempo real." data-repo-stars="18"
+              data-repo-updated="há 4 dias" data-repo-badge="API">
               <div class="repo-title">
                 <h2>newgit/analytics-service</h2>
                 <span class="badge">API</span>
@@ -267,7 +1678,9 @@
           </ul>
 
           <ul class="repo-list hidden" data-segment-panel="starred">
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="open-ui" data-repo-name="mobile-fluent" data-repo-description="Kit de componentes mobile inspirado no Fluent." data-repo-stars="4.1k" data-repo-updated="há 12 horas" data-repo-badge="⭐">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="open-ui" data-repo-name="mobile-fluent"
+              data-repo-description="Kit de componentes mobile inspirado no Fluent." data-repo-stars="4.1k"
+              data-repo-updated="há 12 horas" data-repo-badge="⭐">
               <div class="repo-title">
                 <h2>open-ui/mobile-fluent</h2>
                 <span class="badge">⭐</span>
@@ -278,7 +1691,9 @@
                 <span class="meta-item">★ 4.1k</span>
               </div>
             </li>
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="analytics-labs" data-repo-name="trend-maps" data-repo-description="Visualizações reativas para métricas de produto." data-repo-stars="2.7k" data-repo-updated="há 3 dias" data-repo-badge="Trending">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="analytics-labs"
+              data-repo-name="trend-maps" data-repo-description="Visualizações reativas para métricas de produto."
+              data-repo-stars="2.7k" data-repo-updated="há 3 dias" data-repo-badge="Trending">
               <div class="repo-title">
                 <h2>analytics-labs/trend-maps</h2>
                 <span class="badge neutral">Trending</span>
@@ -289,7 +1704,10 @@
                 <span class="meta-item">★ 2.7k</span>
               </div>
             </li>
-            <li class="repo-card" data-screen="repo-details" data-repo-owner="docs-pt-br" data-repo-name="guia-contribuicao" data-repo-description="Guia colaborativo para contribuir com projetos open source em português." data-repo-stars="980" data-repo-updated="há 1 semana" data-repo-badge="Docs">
+            <li class="repo-card" data-screen="repo-details" data-repo-owner="docs-pt-br"
+              data-repo-name="guia-contribuicao"
+              data-repo-description="Guia colaborativo para contribuir com projetos open source em português."
+              data-repo-stars="980" data-repo-updated="há 1 semana" data-repo-badge="Docs">
               <div class="repo-title">
                 <h2>docs-pt-br/guia-contribuicao</h2>
                 <span class="badge info">Docs</span>
@@ -305,7 +1723,6 @@
       </section>
 
       <!-- TELA 3: Explorar -->
-      <!-- ERRO CORRIGIDO: Esta seção estava duplicada. Removi a cópia. -->
       <section class="screen" id="screen-explore" data-title="Explorar">
         <header class="explore-header">
           <h2>Explorar</h2>
@@ -335,7 +1752,7 @@
             <button class="secondary pill" type="button">Filtrar</button>
           </div>
           <article class="activity-card">
-            <img src="https://avatars.githubusercontent.com/u/9919?v=4" alt="Avatar de Felipe" class="activity-avatar">
+            <img src="https://placehold.co/44x44/9466ff/ffffff?text=F" alt="Avatar de Felipe" class="activity-avatar">
             <div class="activity-body">
               <p><strong>Felipemonrod</strong> seguiu <strong>MaskDMoa</strong></p>
               <span>há 6 dias</span>
@@ -359,7 +1776,7 @@
             <li><span class="dot gray"></span>docs/site-update — docs-site</li>
           </ul>
         </div>
-        <!-- TAREFA 3: Clicar aqui -->
+        <!-- TAREFA 3: Ponto de entrada alternativo -->
         <div class="pull-card" data-pr-title="hotfix/login">
           <div>
             <h3>hotfix/login</h3>
@@ -406,14 +1823,18 @@
             <label><input type="checkbox"> Adicionar licença</label>
           </fieldset>
           <!-- TAREFA 1: Clicar aqui para criar -->
-          <button type="button" class="primary" data-screen="repo-created" data-title="Sucesso">Criar repositório</button>
+          <button type="button" class="primary" data-screen="repo-created" data-title="Sucesso">Criar
+            repositório</button>
         </form>
       </section>
 
       <!-- TELA 6: Sucesso Criação Repo -->
       <section class="screen" id="screen-repo-created" data-title="Sucesso">
         <div class="success-state">
-          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true" width="48" height="48" fill="#238636"><path fill="currentColor" d="M13.78 4.22a.75.75 0 0 0-1.06 0L6.5 10.44 3.28 7.22a.75.75 0 1 0-1.06 1.06l3.75 3.75a.75.75 0 0 0 1.06 0l6.75-6.75a.75.75 0 0 0 0-1.06Z"/></svg>
+          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true" width="48" height="48" fill="#238636">
+            <path fill="currentColor"
+              d="M13.78 4.22a.75.75 0 0 0-1.06 0L6.5 10.44 3.28 7.22a.75.75 0 1 0-1.06 1.06l3.75 3.75a.75.75 0 0 0 1.06 0l6.75-6.75a.75.75 0 0 0 0-1.06Z" />
+          </svg>
           <h2>Repositório criado</h2>
           <p>O repositório <strong>novo-repositorio</strong> está pronto.</p>
           <button class="primary" data-screen="repo-details" data-nav-key="repos">Ir para repositório</button>
@@ -429,7 +1850,11 @@
             <span class="owner">newgit</span>
             <h1>mobile-app</h1>
           </div>
-          <button class="icon-button subtle" aria-label="Star"><svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 12.027 12.472 14.5l-1.19-4.788L15 6.953l-4.898-.402L8 2 5.898 6.551 1 6.953l3.718 2.759-1.19 4.788L8 12.027Z"/></svg></button>
+          <button class="icon-button subtle" aria-label="Star"><svg class="octicon" viewBox="0 0 16 16"
+              aria-hidden="true">
+              <path fill="currentColor"
+                d="M8 12.027 12.472 14.5l-1.19-4.788L15 6.953l-4.898-.402L8 2 5.898 6.551 1 6.953l3.718 2.759-1.19 4.788L8 12.027Z" />
+            </svg></button>
         </div>
         <p class="repo-description">App mobile para revisão rápida de pull requests.</p>
         <div class="repo-stats">
@@ -438,12 +1863,12 @@
         </div>
         <nav class="sub-tabs">
           <button class="sub-tab active" data-subscreen="overview">Visão geral</button>
-          <!-- TAREFA 3: Clicar aqui -->
+          <!-- TAREFA 3: Ponto de entrada -->
           <button class="sub-tab" data-subscreen="pulls">Pull Requests</button>
-          <!-- TAREFA 4: Clicar aqui -->
+          <!-- TAREFA 4: Ponto de entrada -->
           <button class="sub-tab" data-subscreen="files">Arquivos</button>
         </nav>
-        
+
         <!-- Sub-tela Visão Geral -->
         <div class="sub-screen active" id="sub-overview">
           <div class="summary-card">
@@ -455,7 +1880,7 @@
             </ul>
           </div>
         </div>
-        
+
         <!-- Sub-tela Pull Requests (TAREFA 3) -->
         <div class="sub-screen" id="sub-pulls">
           <div class="pull-card" data-pr-title="hotfix/login">
@@ -484,10 +1909,15 @@
                 <strong>README.md</strong>
                 <span>Atualizado há 3 dias</span>
               </div>
-              <button class="icon-button subtle" aria-label="Abrir arquivo"><svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1.75 2A1.75 1.75 0 0 0 0 3.75v8.5C0 13.216.784 14 1.75 14h12.5a1.75 1.75 0 0 0 1.75-1.75v-8.5A1.75 1.75 0 0 0 14.25 2H1.75Zm12.5 1.5a.25.25 0 0 1 .25.25v8.5a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25v-8.5A.25.25 0 0 1 1.75 3.5h12.5Z"/></svg></button>
+              <button class="icon-button subtle" aria-label="Abrir arquivo"><svg class="octicon" viewBox="0 0 16 16"
+                  aria-hidden="true">
+                  <path fill="currentColor"
+                    d="M1.75 2A1.75 1.75 0 0 0 0 3.75v8.5C0 13.216.784 14 1.75 14h12.5a1.75 1.75 0 0 0 1.75-1.75v-8.5A1.75 1.75 0 0 0 14.25 2H1.75Zm12.5 1.5a.25.25 0 0 1 .25.25v8.5a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25v-8.5A.25.25 0 0 1 1.75 3.5h12.5Z" />
+                </svg></button>
             </li>
             <!-- ... outros arquivos ... -->
           </ul>
+          <!-- Lista de arquivos enviados (simulação) -->
           <ul class="file-list upload-list" data-upload-list>
             <li class="upload-empty">Nenhum arquivo enviado ainda.</li>
           </ul>
@@ -502,7 +1932,8 @@
           <h2>Comentário em hotfix/login</h2>
           <textarea rows="6" placeholder="Digite seu feedback"></textarea>
           <!-- TAREFA 3: Clicar para publicar -->
-          <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos">Publicar comentário</button>
+          <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos">Publicar
+            comentário</button>
         </form>
       </section>
 
@@ -512,14 +1943,16 @@
           <h2>Novo arquivo</h2>
           <div class="upload-sim">
             <input type="file" id="quick-upload" hidden>
-            <button class="secondary" type="button" data-action="choose-file" data-target="quick-upload">Escolher arquivo</button>
+            <button class="secondary" type="button" data-action="choose-file" data-target="quick-upload">Escolher
+              arquivo</button>
             <span class="filename" data-default="Nenhum arquivo selecionado">Nenhum arquivo selecionado</span>
           </div>
           <label>Mensagem de commit
             <input type="text" placeholder="ex: adiciona validação de login">
           </label>
           <!-- TAREFA 4: Clicar para submeter -->
-          <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos">Submeter para main</button>
+          <button type="button" class="primary" data-screen="repo-details" data-nav-key="repos">Submeter para
+            main</button>
         </form>
       </section>
 
@@ -649,27 +2082,46 @@
     <!-- Navegação Inferior Fixa -->
     <nav class="bottom-nav">
       <button class="bottom-item" data-screen="home" data-title="Início">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8.002 1.566a1.75 1.75 0 0 0-1.137.417l-5.5 4.875a.75.75 0 1 0 .988 1.128L2 7.25v5.25A1.5 1.5 0 0 0 3.5 14h2A1.5 1.5 0 0 0 7 12.5v-2A.5.5 0 0 1 7.5 10h1a.5.5 0 0 1 .5.5v2A1.5 1.5 0 0 0 10.5 14h2A1.5 1.5 0 0 0 14 12.5V7.25l.647.502a.75.75 0 0 0 .988-1.128l-5.5-4.875a1.75 1.75 0 0 0-1.133-.417Z"/></svg>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M8.002 1.566a1.75 1.75 0 0 0-1.137.417l-5.5 4.875a.75.75 0 1 0 .988 1.128L2 7.25v5.25A1.5 1.5 0 0 0 3.5 14h2A1.5 1.5 0 0 0 7 12.5v-2A.5.5 0 0 1 7.5 10h1a.5.5 0 0 1 .5.5v2A1.5 1.5 0 0 0 10.5 14h2A1.5 1.5 0 0 0 14 12.5V7.25l.647.502a.75.75 0 0 0 .988-1.128l-5.5-4.875a1.75 1.75 0 0 0-1.133-.417Z" />
+        </svg>
         <span>Início</span>
       </button>
       <button class="bottom-item active" data-screen="repos" data-title="Repositórios">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2 2.75A1.75 1.75 0 0 1 3.75 1h8.5A1.75 1.75 0 0 1 14 2.75v10.5A1.75 1.75 0 0 1 12.25 15h-8.5A1.75 1.75 0 0 1 2 13.25Zm10.25-.25h-8.5a.25.25 0 0 0-.25.25v10.5a.25.25 0 0 0 .25.25h8.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25Z"/></svg>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M2 2.75A1.75 1.75 0 0 1 3.75 1h8.5A1.75 1.75 0 0 1 14 2.75v10.5A1.75 1.75 0 0 1 12.25 15h-8.5A1.75 1.75 0 0 1 2 13.25Zm10.25-.25h-8.5a.25.25 0 0 0-.25.25v10.5a.25.25 0 0 0 .25.25h8.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25Z" />
+        </svg>
         <span>Repos</span>
       </button>
       <button class="bottom-item" data-screen="explore" data-title="Explorar">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5a6.5 6.5 0 1 0 6.5 6.5A6.508 6.508 0 0 0 8 1.5Zm3.28 4.22-1.5 3.5a.75.75 0 0 1-.39.39l-3.5 1.5a.75.75 0 0 1-.97-.97l1.5-3.5a.75.75 0 0 1 .39-.39l3.5-1.5a.75.75 0 0 1 .97.97Zm-3.28-.47a1 1 0 1 0 1 1 1 1 0 0 0-1-1Z"/></svg>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M8 1.5a6.5 6.5 0 1 0 6.5 6.5A6.508 6.508 0 0 0 8 1.5Zm3.28 4.22-1.5 3.5a.75.75 0 0 1-.39.39l-3.5 1.5a.75.75 0 0 1-.97-.97l1.5-3.5a.75.75 0 0 1 .39-.39l3.5-1.5a.75.75 0 0 1 .97.97Zm-3.28-.47a1 1 0 1 0 1 1 1 1 0 0 0-1-1Z" />
+        </svg>
         <span>Explorar</span>
       </button>
       <button class="bottom-item" data-screen="pulls" data-title="Pull Requests">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1.5 2.75A.75.75 0 0 1 2.25 2h11.5a.75.75 0 0 1 0 1.5H2.25A.75.75 0 0 1 1.5 2.75Zm0 3.5a.75.75 0 0 1 .75-.75h11.5a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h11.5a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z"/></svg>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M1.5 2.75A.75.75 0 0 1 2.25 2h11.5a.75.75 0 0 1 0 1.5H2.25A.75.75 0 0 1 1.5 2.75Zm0 3.5a.75.75 0 0 1 .75-.75h11.5a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h11.5a.75.75 0 0 1 0 1.5H2.25a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Z" />
+        </svg>
         <span>PRs</span>
       </button>
+      <!-- TAREFA 5: Ponto de entrada -->
       <button class="bottom-item" data-screen="notifications" data-title="Notificações">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5a3.5 3.5 0 0 0-3.5 3.5v1.085c0 .338-.112.667-.317.934L3.1 8.383c-.64.82-.01 1.992 1 1.992h7.8c1.01 0 1.64-1.173 1-1.992l-1.083-1.364a1.5 1.5 0 0 1-.317-.934V5A3.5 3.5 0 0 0 8 1.5Zm0 12a2.5 2.5 0 0 0 2.45-2H5.55A2.5 2.5 0 0 0 8 13.5Z"/></svg>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M8 1.5a3.5 3.5 0 0 0-3.5 3.5v1.085c0 .338-.112.667-.317.934L3.1 8.383c-.64.82-.01 1.992 1 1.992h7.8c1.01 0 1.64-1.173 1-1.992l-1.083-1.364a1.5 1.5 0 0 1-.317-.934V5A3.5 3.5 0 0 0 8 1.5Zm0 12a2.5 2.5 0 0 0 2.45-2H5.55A2.5 2.5 0 0 0 8 13.5Z" />
+        </svg>
         <span>Alertas</span>
       </button>
       <button class="bottom-item" data-screen="profile" data-title="Perfil">
-        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M10.5 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.75 7.25a.75.75 0 0 1-.75.75h-7a.75.75 0 0 1-.75-.75 3.75 3.75 0 0 1 7.5 0Z"/></svg>
+        <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill="currentColor"
+            d="M10.5 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.75 7.25a.75.75 0 0 1-.75.75h-7a.75.75 0 0 1-.75-.75 3.75 3.75 0 0 1 7.5 0Z" />
+        </svg>
         <span>Perfil</span>
       </button>
     </nav>
@@ -720,13 +2172,22 @@
       <div class="sheet-body">
         <h3>Pesquisar</h3>
         <div class="search-input large">
-          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.75 10.5h-.79l-.27-.26A5.471 5.471 0 0 0 12.5 6.25 5.5 5.5 0 1 0 7 11.75a5.47 5.47 0 0 0 3.99-1.78l.26.27v.79l4.25 4.24L16 14.75l-4.25-4.25Zm-4.75 0A4.25 4.25 0 1 1 11.25 6.25 4.25 4.25 0 0 1 7 10.5Z"/></svg>
+          <svg class="octicon" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor"
+              d="M11.75 10.5h-.79l-.27-.26A5.471 5.471 0 0 0 12.5 6.25 5.5 5.5 0 1 0 7 11.75a5.47 5.47 0 0 0 3.99-1.78l.26.27v.79l4.25 4.24L16 14.75l-4.25-4.25Zm-4.75 0A4.25 4.25 0 1 1 11.25 6.25 4.25 4.25 0 0 1 7 10.5Z" />
+          </svg>
           <input type="search" placeholder="Pesquisar no GitHub" aria-label="Pesquisar">
         </div>
         <ul class="sheet-suggestions">
-          <li data-screen="repo-details" data-nav-key="repos" data-repo-owner="newgit" data-repo-name="mobile-app" data-repo-description="App mobile para revisão rápida de pull requests." data-repo-stars="128" data-repo-updated="há 2 dias">mobile-app</li>
-          <li data-screen="repo-details" data-nav-key="repos" data-repo-owner="newgit" data-repo-name="web-dashboard" data-repo-description="Painel administrativo com métricas de projeto." data-repo-stars="64" data-repo-updated="há 3 dias">web-dashboard</li>
-          <li data-screen="repo-details" data-nav-key="repos" data-repo-owner="newgit" data-repo-name="docs-site" data-repo-description="Documentação pública dos projetos e guidelines." data-repo-stars="22" data-repo-updated="há 5 dias">docs-site</li>
+          <li data-screen="repo-details" data-nav-key="repos" data-repo-owner="newgit" data-repo-name="mobile-app"
+            data-repo-description="App mobile para revisão rápida de pull requests." data-repo-stars="128"
+            data-repo-updated="há 2 dias">mobile-app</li>
+          <li data-screen="repo-details" data-nav-key="repos" data-repo-owner="newgit" data-repo-name="web-dashboard"
+            data-repo-description="Painel administrativo com métricas de projeto." data-repo-stars="64"
+            data-repo-updated="há 3 dias">web-dashboard</li>
+          <li data-screen="repo-details" data-nav-key="repos" data-repo-owner="newgit" data-repo-name="docs-site"
+            data-repo-description="Documentação pública dos projetos e guidelines." data-repo-stars="22"
+            data-repo-updated="há 5 dias">docs-site</li>
         </ul>
         <button class="secondary full" data-sheet-close>Fechar</button>
       </div>
@@ -736,6 +2197,764 @@
   <!-- Fundo escuro para modais -->
   <div class="sheet-backdrop" hidden></div>
 
-  <script src="script.js"></script>
+  <!-- Scripts JS combinados -->
+  <script>
+    // Seletores DOM
+    const device = document.querySelector(".device");
+    const topbar = document.querySelector(".topbar");
+    const topbarTitle = document.querySelector(".topbar-title");
+    const screens = Array.from(document.querySelectorAll(".screen"));
+    const bottomItems = Array.from(document.querySelectorAll(".bottom-item"));
+    const subTabs = Array.from(document.querySelectorAll(".sub-tab"));
+    const subScreens = Array.from(document.querySelectorAll(".sub-screen"));
+    const sheets = Array.from(document.querySelectorAll(".sheet"));
+    const sheetBackdrop = document.querySelector(".sheet-backdrop");
+    const segmentedButtons = Array.from(document.querySelectorAll(".segmented"));
+    const segmentedPanels = Array.from(document.querySelectorAll("[data-segment-panel]"));
+    const notificationFilters = Array.from(document.querySelectorAll(".filter"));
+    const notificationPanels = Array.from(document.querySelectorAll("[data-filter-panel]"));
+    const bottomNav = document.querySelector(".bottom-nav");
+    const appRoot = document.getElementById("app");
+
+    // Seletores de Autenticação (não usados no fluxo principal, mas parte do código)
+    const authScreen = document.getElementById("auth-screen");
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const authMessage = document.getElementById("auth-message");
+    const authToggleButtons = Array.from(document.querySelectorAll("[data-auth-toggle]"));
+
+    // Seletores de Upload
+    const quickUploadInput = document.querySelector("#quick-upload");
+    const quickUploadLabel = document.querySelector("#screen-submit-file .filename");
+    const uploadList = document.querySelector("#sub-files [data-upload-list]");
+
+    // Constantes de Simulação de Storage
+    const USER_STORAGE_KEY = "gh-mobile-user";
+    const SESSION_STORAGE_KEY = "gh-mobile-session";
+    const UPLOAD_STORAGE_KEY = "gh-mobile-uploads";
+    const UPLOAD_LIMIT = 20; // Limita o histórico de uploads
+    let pendingUpload = null;
+    let isReadingUpload = false;
+
+    // Seletores de Detalhes do Repositório
+    const repoDetailSection = document.querySelector("#screen-repo-details");
+    const detailOwner = repoDetailSection?.querySelector(".repo-heading .owner");
+    const detailName = repoDetailSection?.querySelector(".repo-heading h1");
+    const detailAvatar = repoDetailSection?.querySelector(".owner-avatar");
+    const detailSummaryTitle = repoDetailSection?.querySelector(".summary-card h3");
+    const detailDescription = repoDetailSection?.querySelector(".repo-description");
+    const detailStatStars = repoDetailSection?.querySelector("[data-stat='stars']");
+    const detailStatUpdated = repoDetailSection?.querySelector("[data-stat='updated']");
+    const repoList = document.querySelector(".repo-list[data-segment-panel='all']"); // Alvo específico
+
+    // Seletores de Telas de Submissão
+    const submitCommentHeading = document.querySelector("#screen-submit-comment h2");
+    const submitFileHeading = document.querySelector("#screen-submit-file h2");
+    const submitFileButton = document.querySelector("#screen-submit-file .primary");
+
+    // Seletores da Tela de Sucesso
+    const successScreen = document.querySelector("#screen-repo-created");
+    const successRepoName = successScreen?.querySelector("strong");
+    const successButton = successScreen?.querySelector(".primary");
+
+    // Estado Global Simulado
+    let currentScreen = "repos"; // Tela inicial do protótipo
+    let currentRepo = {
+      owner: "newgit",
+      name: "mobile-app",
+      description: "App mobile para revisão rápida de pull requests.",
+      stars: "128",
+      updated: "há 2 dias"
+    };
+    let currentPullRequest = "hotfix/login";
+
+    /**
+     * Exibe uma tela específica e atualiza a navegação.
+     * @param {string} screenKey - A chave da tela (ex: "home", "repos").
+     * @param {object} options - Opções como "title" e "navKey".
+     */
+    function showScreen(screenKey, options = {}) {
+      const targetId = `screen-${screenKey}`;
+      const target = document.getElementById(targetId);
+      if (!target) {
+        console.warn(`Tela não encontrada: ${targetId}`);
+        return;
+      }
+
+      // Esconde todas as telas e mostra a tela alvo
+      screens.forEach(section => {
+        section.classList.toggle("active", section === target);
+      });
+
+      // Atualiza o item ativo na barra de navegação inferior
+      const navKey = options.navKey ?? screenKey;
+      bottomItems.forEach(item => {
+        item.classList.toggle("active", item.dataset.screen === navKey);
+      });
+
+      // Atualiza o título na barra superior
+      const title = options.title || target.dataset.title || topbar.dataset.defaultTitle || "GitHub";
+      if (topbarTitle) {
+        topbarTitle.textContent = title;
+      }
+
+      currentScreen = screenKey;
+    }
+
+    /**
+     * Ativa uma sub-tela (abas dentro de uma tela, ex: "Arquivos" em Repositório).
+     * @param {string} subId - O ID da sub-tela a ser mostrada.
+     */
+    function setActiveSubScreen(subId) {
+      subScreens.forEach(sub => {
+        sub.classList.toggle("active", sub.id === `sub-${subId}`);
+      });
+
+      subTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.subscreen === subId);
+      });
+    }
+
+    /**
+     * Gerencia a seleção de botões segmentados (ex: "Todos", "Meus").
+     * @param {HTMLElement} target - O botão segmentado que foi clicado.
+     */
+    function setActiveSegment(target) {
+      segmentedButtons.forEach(button => {
+        button.classList.toggle("active", button === target);
+        button.setAttribute("aria-pressed", button === target ? "true" : "false");
+      });
+
+      const keyToShow = target?.dataset.segmentKey || segmentedPanels[0]?.dataset.segmentPanel;
+      segmentedPanels.forEach(panel => {
+        const isMatch = panel.dataset.segmentPanel === keyToShow;
+        panel.classList.toggle("hidden", !isMatch);
+        panel.setAttribute("aria-hidden", isMatch ? "false" : "true");
+      });
+    }
+
+    /**
+     * Gerencia os filtros na tela de notificações.
+     * @param {HTMLElement} target - O botão de filtro que foi clicado.
+     */
+    function setActiveFilter(target) {
+      notificationFilters.forEach(button => {
+        button.classList.toggle("active", button === target);
+        button.setAttribute("aria-pressed", button === target ? "true" : "false");
+      });
+
+      const keyToShow = target?.dataset.filterKey || notificationPanels[0]?.dataset.filterPanel;
+      notificationPanels.forEach(panel => {
+        const isMatch = panel.dataset.filterPanel === keyToShow;
+        panel.classList.toggle("hidden", !isMatch);
+        panel.setAttribute("aria-hidden", isMatch ? "false" : "true");
+      });
+    }
+
+    /**
+     * Abre um modal (sheet) pelo nome.
+     * @param {string} name - O nome do sheet (ex: "create-menu").
+     */
+    function openSheet(name) {
+      const sheet = document.getElementById(`sheet-${name}`);
+      if (!sheet) {
+        return;
+      }
+      sheets.forEach(item => item.classList.remove("open"));
+      sheet.classList.add("open");
+      if (sheetBackdrop) {
+        sheetBackdrop.hidden = false;
+      }
+    }
+
+    /**
+     * Fecha todos os modais (sheets) abertos.
+     */
+    function closeSheets() {
+      sheets.forEach(item => item.classList.remove("open"));
+      if (sheetBackdrop) {
+        sheetBackdrop.hidden = true;
+      }
+    }
+
+    /**
+     * Reseta o estado do input de upload de arquivo.
+     */
+    function resetQuickUpload() {
+      pendingUpload = null;
+      isReadingUpload = false;
+      if (quickUploadInput) {
+        quickUploadInput.value = "";
+      }
+      if (quickUploadLabel) {
+        const fallback = quickUploadLabel.dataset.default || "Nenhum arquivo selecionado";
+        quickUploadLabel.textContent = fallback;
+      }
+    }
+
+    /**
+     * Carrega os uploads simulados do localStorage.
+     * @returns {object} - Objeto com os uploads por repositório.
+     */
+    function loadUploads() {
+      try {
+        const raw = localStorage.getItem(UPLOAD_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (error) {
+        console.error("Falha ao carregar uploads", error);
+        return {};
+      }
+    }
+
+    /**
+     * Salva os uploads simulados no localStorage.
+     * @param {object} data - Objeto de uploads para salvar.
+     */
+    function saveUploads(data) {
+      try {
+        localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(data));
+      } catch (error) {
+        console.error("Falha ao salvar uploads", error);
+      }
+    }
+
+    /**
+     * Obtém a chave única do repositório (owner/name).
+     * @param {object} repo - O objeto do repositório atual.
+     * @returns {string|null} - A chave do repositório.
+     */
+    function getRepoKey(repo = currentRepo) {
+      if (!repo || !repo.owner || !repo.name) {
+        return null;
+      }
+      return `${repo.owner}/${repo.name}`;
+    }
+
+    // --- Funções de formatação (Helpers) ---
+    function formatRelativeTime(timestamp) {
+      if (!timestamp) return "agora mesmo";
+      const diff = Date.now() - timestamp;
+      const minute = 60 * 1000;
+      const hour = 60 * minute;
+      const day = 24 * hour;
+      const week = 7 * day;
+      if (diff < minute) return "agora mesmo";
+      if (diff < hour) {
+        const minutes = Math.round(diff / minute);
+        return `há ${minutes} ${minutes === 1 ? "minuto" : "minutos"}`;
+      }
+      if (diff < day) {
+        const hours = Math.round(diff / hour);
+        return `há ${hours} ${hours === 1 ? "hora" : "horas"}`;
+      }
+      if (diff < week) {
+        const days = Math.round(diff / day);
+        return `há ${days} ${days === 1 ? "dia" : "dias"}`;
+      }
+      const weeks = Math.round(diff / week);
+      if (weeks < 5) return `há ${weeks} ${weeks === 1 ? "semana" : "semanas"}`;
+      const months = Math.round(diff / (30 * day));
+      if (months < 12) return `há ${months} ${months === 1 ? "mês" : "meses"}`;
+      const years = Math.round(diff / (365 * day));
+      return `há ${years} ${years === 1 ? "ano" : "anos"}`;
+    }
+
+    function formatFileSize(bytes) {
+      if (!Number.isFinite(bytes)) return "-";
+      if (bytes < 1024) return `${bytes} B`;
+      const units = ["KB", "MB", "GB", "TB"];
+      let size = bytes / 1024;
+      let unitIndex = 0;
+      while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex += 1;
+      }
+      return `${size.toFixed(1)} ${units[unitIndex]}`;
+    }
+    // --- Fim das Funções de formatação ---
+
+    /**
+     * Renderiza a lista de arquivos "enviados" (do localStorage) na UI.
+     */
+    function renderUploads() {
+      if (!uploadList) {
+        return;
+      }
+      const uploads = loadUploads();
+      const repoKey = getRepoKey();
+      uploadList.innerHTML = ""; // Limpa a lista
+
+      if (!repoKey || !uploads[repoKey] || uploads[repoKey].length === 0) {
+        const emptyItem = document.createElement("li");
+        emptyItem.className = "upload-empty";
+        emptyItem.textContent = "Nenhum arquivo enviado ainda.";
+        uploadList.append(emptyItem);
+        return;
+      }
+
+      // Adiciona cada arquivo da simulação
+      uploads[repoKey].forEach(entry => {
+        const li = document.createElement("li");
+        const info = document.createElement("div");
+        const nameEl = document.createElement("strong");
+        nameEl.textContent = entry.name;
+        const metaEl = document.createElement("span");
+        const parts = [formatRelativeTime(entry.uploadedAt), formatFileSize(entry.size)];
+        if (entry.message) {
+          parts.push(entry.message);
+        }
+        metaEl.textContent = parts.join(" · ");
+        info.append(nameEl, metaEl);
+
+        // Simula um link de download (Data URL)
+        const downloadLink = document.createElement("a");
+        downloadLink.className = "secondary";
+        downloadLink.textContent = "Baixar";
+        downloadLink.href = entry.content;
+        downloadLink.download = entry.name;
+
+        li.append(info, downloadLink);
+        uploadList.append(li);
+      });
+    }
+
+    /**
+     * Processa o arquivo pendente (lido do input) e salva no localStorage.
+     * @param {HTMLFormElement} form - O formulário de envio.
+     * @returns {boolean} - Sucesso ou falha.
+     */
+    function processPendingUpload(form) {
+      if (isReadingUpload) {
+        // Usando console.warn em vez de alert para não travar o teste
+        console.warn("Aguarde o carregamento do arquivo.");
+        return false;
+      }
+      if (!pendingUpload) {
+        console.warn("Selecione um arquivo antes de enviar.");
+        return false;
+      }
+      const uploads = loadUploads();
+      const repoKey = getRepoKey();
+      if (!repoKey) {
+        console.warn("Selecione um repositório válido.");
+        return false;
+      }
+
+      const messageInput = form?.querySelector("input[type='text']");
+      const message = messageInput?.value?.trim() || "Upload via app";
+      const entry = {
+        ...pendingUpload,
+        uploadedAt: Date.now(),
+        message
+      };
+
+      const repoUploads = uploads[repoKey] || [];
+      repoUploads.unshift(entry); // Adiciona no início
+      uploads[repoKey] = repoUploads.slice(0, UPLOAD_LIMIT); // Limita o histórico
+
+      saveUploads(uploads);
+      if (messageInput) {
+        messageInput.value = "";
+      }
+
+      renderUploads();
+      resetQuickUpload();
+      return true;
+    }
+
+    /**
+     * Gera iniciais a partir do nome do "owner".
+     * @param {string} owner - Nome do owner.
+     * @returns {string} - Iniciais (ex: "NG").
+     */
+    function initialsFromOwner(owner) {
+      if (!owner) return "--";
+      const parts = owner.split(/[\W_]+/).filter(Boolean);
+      if (parts.length === 0) return owner.slice(0, 2).toUpperCase();
+      const chars = parts.map(part => part.charAt(0)).join("");
+      return chars.slice(0, 2).toUpperCase();
+    }
+
+    /**
+     * Atualiza a tela de detalhes do repositório com novos dados.
+     * @param {object} data - Dados do repositório.
+     */
+    function updateRepoDetails(data) {
+      currentRepo = { ...currentRepo, ...data };
+
+      if (repoDetailSection) repoDetailSection.dataset.title = data.name;
+      if (detailOwner) detailOwner.textContent = data.owner;
+      if (detailName) detailName.textContent = data.name;
+      if (detailAvatar) detailAvatar.textContent = initialsFromOwner(data.owner);
+      if (detailSummaryTitle) detailSummaryTitle.textContent = `Atividade recente em ${data.name}`;
+      if (detailDescription && data.description) detailDescription.textContent = data.description;
+
+      if (detailStatStars) {
+        const starsValue = data.stars !== undefined ? data.stars : currentRepo.stars;
+        detailStatStars.textContent = `⭐ ${starsValue} favoritos`;
+      }
+      if (detailStatUpdated) {
+        const updatedValue = data.updated || currentRepo.updated;
+        detailStatUpdated.textContent = `Atualizado ${updatedValue}`;
+      }
+
+      // Atualiza telas dependentes (Envio de Arquivo, Sucesso)
+      if (submitFileHeading) submitFileHeading.textContent = `Enviar arquivo — ${data.name}`;
+      if (submitFileButton) submitFileButton.textContent = `Submeter para ${data.name}`;
+      if (successButton) {
+        successButton.dataset.repoOwner = data.owner;
+        successButton.dataset.repoName = data.name;
+      }
+
+      renderUploads(); // Recarrega os uploads para este repositório
+    }
+
+    /**
+     * Manipula o clique em um card de repositório.
+     * @param {HTMLElement} card - O elemento <li> do card clicado.
+     */
+    function handleRepoCard(card) {
+      const data = {
+        owner: card.dataset.repoOwner,
+        name: card.dataset.repoName,
+        description: card.dataset.repoDescription,
+        stars: card.dataset.repoStars,
+        updated: card.dataset.repoUpdated
+      };
+      updateRepoDetails(data);
+      showScreen("repo-details", { title: data.name, navKey: "repos" });
+      setActiveSubScreen("overview"); // Sempre reseta para "Visão geral"
+    }
+
+    /**
+     * Manipula o fluxo de criação de repositório (simulado).
+     * @param {HTMLElement} trigger - O botão que disparou a criação.
+     */
+    function handleCreateFlow(trigger) {
+      const form = trigger.closest("form");
+      if (!form) return;
+
+      const owner = form.querySelector("select")?.value?.trim() || "newgit";
+      const nameValue = form.querySelector("input[type='text']")?.value?.trim();
+      const repoName = nameValue && nameValue.length ? nameValue : "novo-repositorio";
+
+      const repoData = {
+        owner,
+        name: repoName,
+        description: "Repositório criado pelo app",
+        stars: "0",
+        updated: "agora mesmo"
+      };
+
+      // Prepara a tela de sucesso com os dados
+      if (successRepoName) successRepoName.textContent = `${owner}/${repoName}`;
+      if (successButton) {
+        Object.keys(repoData).forEach(key => {
+          successButton.dataset[`repo${key.charAt(0).toUpperCase() + key.slice(1)}`] = repoData[key];
+        });
+      }
+
+      renderRepoCard(repoData); // Adiciona o novo repo na lista
+      showScreen("repo-created", { title: "Sucesso", navKey: "repos" });
+    }
+
+    /**
+     * Manipula o clique para comentar em um PR.
+     * @param {HTMLElement} target - O elemento que disparou a ação.
+     */
+    function handlePullRequestTrigger(target) {
+      const prTitle = target.dataset.prTitle || target.closest("[data-pr-title]")?.dataset.prTitle || currentPullRequest;
+      currentPullRequest = prTitle;
+      if (submitCommentHeading) {
+        submitCommentHeading.textContent = `Comentar ${prTitle}`;
+      }
+      showScreen("submit-comment", { title: "Comentar PR", navKey: "repos" });
+    }
+
+    /**
+     * Manipulador principal para gatilhos de navegação de tela.
+     * @param {HTMLElement} trigger - O elemento (botão, li, etc.) com `data-screen`.
+     */
+    function handleScreenTrigger(trigger) {
+      const screenKey = trigger.dataset.screen;
+      if (!screenKey) return;
+
+      // Lógica específica para o fluxo de SUBMISSÃO DE ARQUIVO
+      if (trigger.closest("#screen-submit-file") && screenKey === "repo-details") {
+        // Tenta processar o upload ANTES de navegar
+        const form = trigger.closest("form");
+        const success = processPendingUpload(form);
+        if (!success) {
+          console.warn("Submissão falhou, permanecendo na tela.");
+          // Poderia-se impedir a navegação, mas para o protótipo, apenas logamos.
+          // return; // Descomente para impedir navegação se o upload falhar
+        }
+        resetQuickUpload(); // Limpa o input
+      }
+
+      // Fecha o sheet se a navegação partiu de dentro de um
+      if (trigger.closest(".sheet")) {
+        closeSheets();
+      }
+
+      // Se o gatilho for um card de repositório (que tem data-repo-name)
+      if (screenKey === "repo-details" && trigger.dataset.repoName) {
+        handleRepoCard(trigger);
+        return;
+      }
+
+      // Se for o botão "Criar repositório" (que leva a repo-created)
+      if (screenKey === "repo-created") {
+        handleCreateFlow(trigger);
+        return;
+      }
+
+      // Se for um botão de "Comentar PR"
+      if (screenKey === "submit-comment") {
+        handlePullRequestTrigger(trigger);
+        return;
+      }
+
+      // Se for o botão "Ir para repositório" (da tela de sucesso)
+      if (screenKey === "repo-details" && trigger.dataset.repoOwner) {
+        const data = {
+          owner: trigger.dataset.repoOwner,
+          name: trigger.dataset.repoName,
+          description: trigger.dataset.repoDescription || currentRepo.description,
+          stars: trigger.dataset.repoStars || currentRepo.stars,
+          updated: trigger.dataset.repoUpdated || currentRepo.updated
+        };
+        updateRepoDetails(data);
+        showScreen("repo-details", { title: data.name, navKey: "repos" });
+        setActiveSubScreen("overview"); // Reseta para "Visão geral"
+        return;
+      }
+
+      // Navegação padrão
+      const options = {
+        title: trigger.dataset.title,
+        navKey: trigger.dataset.navKey
+      };
+      showScreen(screenKey, options);
+    }
+
+    /**
+     * Renderiza um novo card de repositório na lista (ou atualiza um existente).
+     * @param {object} data - Dados do repositório a ser renderizado.
+     */
+    function renderRepoCard(data) {
+      if (!repoList || !data.owner || !data.name) {
+        return;
+      }
+
+      const selector = `[data-repo-owner="${data.owner}"][data-repo-name="${data.name}"]`;
+      const existing = repoList.querySelector(selector);
+
+      // Atualiza se já existir
+      if (existing) {
+        existing.dataset.repoDescription = data.description;
+        existing.dataset.repoStars = data.stars;
+        existing.dataset.repoUpdated = data.updated;
+        const title = existing.querySelector(".repo-title h2");
+        const description = existing.querySelector("p");
+        const metaItems = existing.querySelectorAll(".meta-item");
+        if (title) title.textContent = `${data.owner}/${data.name}`;
+        if (description) description.textContent = data.description;
+        if (metaItems[0]) metaItems[0].textContent = `Atualizado ${data.updated}`;
+        if (metaItems[1]) metaItems[1].textContent = `★ ${data.stars}`;
+        repoList.prepend(existing); // Move para o topo
+        return;
+      }
+
+      // Cria novo se não existir
+      const li = document.createElement("li");
+      li.className = "repo-card";
+      li.dataset.screen = "repo-details";
+      li.dataset.repoOwner = data.owner;
+      li.dataset.repoName = data.name;
+      li.dataset.repoDescription = data.description;
+      li.dataset.repoStars = data.stars;
+      li.dataset.repoUpdated = data.updated;
+      li.innerHTML = `
+        <div class="repo-title">
+          <h2>${data.owner}/${data.name}</h2>
+          <span class="badge">Novo</span>
+        </div>
+        <p>${data.description}</p>
+        <div class="repo-meta">
+          <span class="meta-item">Atualizado ${data.updated}</span>
+          <span class="meta-item">★ ${data.stars}</span>
+        </div>
+      `;
+      repoList.prepend(li);
+    }
+
+    /**
+     * Manipulador de clique global para o documento.
+     */
+    function handleClick(event) {
+      const target = event.target;
+
+      // Fecha modais
+      const sheetClose = target.closest("[data-sheet-close]");
+      if (sheetClose) {
+        event.preventDefault();
+        closeSheets();
+        return;
+      }
+
+      // Abre modais
+      const sheetTrigger = target.closest("[data-sheet-target]");
+      if (sheetTrigger) {
+        event.preventDefault();
+        openSheet(sheetTrigger.dataset.sheetTarget);
+        return;
+      }
+
+      // Filtros segmentados (Repos)
+      const segmentedTrigger = target.closest(".segmented");
+      if (segmentedTrigger) {
+        event.preventDefault();
+        setActiveSegment(segmentedTrigger);
+        return;
+      }
+
+      // Filtros (Notificações)
+      const filterTrigger = target.closest(".filter");
+      if (filterTrigger) {
+        event.preventDefault();
+        setActiveFilter(filterTrigger);
+        return;
+      }
+
+      // Botão "Escolher arquivo"
+      const fileTrigger = target.closest("[data-action='choose-file']");
+      if (fileTrigger) {
+        event.preventDefault();
+        const targetId = fileTrigger.dataset.target;
+        const input = targetId ? document.getElementById(targetId) : quickUploadInput;
+        input?.click(); // Abre o seletor de arquivos
+        return;
+      }
+
+      // Navegação da barra inferior
+      const bottomTrigger = target.closest(".bottom-item");
+      if (bottomTrigger) {
+        event.preventDefault();
+        const screenKey = bottomTrigger.dataset.screen;
+        const title = bottomTrigger.dataset.title;
+        showScreen(screenKey, { title });
+        closeSheets(); // Fecha modais ao navegar
+        return;
+      }
+
+      // Gatilho genérico de navegação de tela
+      const screenTrigger = target.closest("[data-screen]");
+      if (screenTrigger) {
+        event.preventDefault();
+        handleScreenTrigger(screenTrigger);
+        return;
+      }
+    }
+
+    /**
+     * Manipulador de clique para as sub-abas (Visão Geral, PRs, Arquivos).
+     */
+    function handleSubTabClick(event) {
+      const button = event.target.closest(".sub-tab");
+      if (!button) {
+        return;
+      }
+      setActiveSubScreen(button.dataset.subscreen);
+    }
+
+    /**
+     * Manipulador de mudança no input de arquivo (para simulação de upload).
+     */
+    function handleFileChange(event) {
+      if (!quickUploadLabel) return;
+      const file = event.target.files?.[0];
+
+      if (file) {
+        isReadingUpload = true; // Trava a submissão
+        quickUploadLabel.textContent = `Carregando ${file.name}...`;
+
+        // Simula a leitura do arquivo como Data URL
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          pendingUpload = {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            content: e.target.result // Salva o conteúdo como Base64
+          };
+          quickUploadLabel.textContent = file.name; // Pronto para enviar
+          isReadingUpload = false; // Libera a submissão
+        };
+        reader.onerror = () => {
+          console.error("Falha ao ler o arquivo.");
+          quickUploadLabel.textContent = "Erro ao ler arquivo.";
+          isReadingUpload = false;
+        };
+        reader.readAsDataURL(file); // Inicia a leitura
+
+      } else {
+        const fallback = quickUploadLabel.dataset.default || "Nenhum arquivo selecionado";
+        quickUploadLabel.textContent = fallback;
+        pendingUpload = null;
+      }
+    }
+
+    // --- Inicialização e Event Listeners ---
+
+    // Manipulador de clique principal
+    document.addEventListener("click", handleClick);
+
+    // Manipulador das sub-abas
+    if (repoDetailSection) {
+      const subTabContainer = repoDetailSection.querySelector(".sub-tabs");
+      if (subTabContainer) {
+        subTabContainer.addEventListener("click", handleSubTabClick);
+      }
+    }
+
+    // Fechar modal ao clicar no backdrop
+    if (sheetBackdrop) {
+      sheetBackdrop.addEventListener("click", closeSheets);
+    }
+
+    // Fechar modal com a tecla 'Escape'
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeSheets();
+      }
+    });
+
+    // Listener para o input de arquivo
+    if (quickUploadInput) {
+      quickUploadInput.addEventListener("change", handleFileChange);
+    }
+
+    // --- Estado Inicial do App ---
+
+    // Define o segmento "Todos" como ativo
+    if (segmentedButtons[0]) {
+      setActiveSegment(segmentedButtons[0]);
+    }
+
+    // Define o filtro "Inbox" como ativo
+    if (notificationFilters[0]) {
+      setActiveFilter(notificationFilters[0]);
+    }
+
+    // Exibe a tela inicial ("Repositórios")
+    showScreen("repos", { title: "Repositórios" });
+    // Ativa a sub-aba inicial ("Visão geral")
+    setActiveSubScreen("overview");
+    // Carrega os dados do repositório padrão
+    updateRepoDetails(currentRepo);
+
+  </script>
 </body>
+
 </html>
