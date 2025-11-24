@@ -485,6 +485,14 @@
       margin-bottom: 16px;
     }
 
+    .repo-actions {
+      margin-bottom: 16px;
+    }
+
+    .repo-actions .primary {
+      justify-content: center;
+    }
+
     .search-input {
       grid-column: 1 / -1;
       display: flex;
@@ -540,6 +548,14 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+    }
+
+    .file-actions {
+      margin-bottom: 12px;
+    }
+
+    .file-actions .primary {
+      justify-content: center;
     }
 
     .repo-card {
@@ -1669,6 +1685,10 @@
           <button class="segmented" data-segment-key="owned">Meus</button>
           <button class="segmented" data-segment-key="starred">Favoritos</button>
         </div>
+        <div class="repo-actions">
+          <button class="primary full" type="button" data-screen="create" data-title="Criar repositório"
+            data-nav-key="repos">Novo repositório</button>
+        </div>
         <div class="repo-panels">
           <ul class="repo-list" data-segment-panel="all">
             <!-- TAREFA 2: Clicar aqui -->
@@ -1988,6 +2008,10 @@
 
         <!-- Sub-tela Arquivos (TAREFA 4) -->
         <div class="sub-screen" id="sub-files">
+          <div class="file-actions">
+            <!-- TAREFA 4: Clicar aqui -->
+            <button class="primary full" data-screen="submit-file" data-nav-key="repos">Enviar arquivo</button>
+          </div>
           <ul class="file-list" data-static-files>
             <li>
               <div>
@@ -2006,8 +2030,6 @@
           <ul class="file-list upload-list" data-upload-list>
             <li class="upload-empty">Nenhum arquivo enviado ainda.</li>
           </ul>
-          <!-- TAREFA 4: Clicar aqui -->
-          <button class="primary full" data-screen="submit-file" data-nav-key="repos">Enviar arquivo</button>
         </div>
       </section>
 
