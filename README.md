@@ -34,5 +34,9 @@ Heurísticas de colaboração em um modelo reduzido do GitHub Mobile, desenvolvi
 - [Fernando Alves](https://github.com/FernandoAlves049)
 - [Felipe Montalvão](https://github.com/Felipemonrod)
 - [Victor Hugo](https://github.com/TempestOFC)
+<<<<<<< HEAD
 - [henrique]
+=======
+- henrique
+>>>>>>> 903297eb3a8c2659872c4359efbc84d08f3696b0
 
