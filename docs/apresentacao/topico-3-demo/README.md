@@ -8,6 +8,7 @@ Tempo estimado total: **5 a 6 minutos**. Gravar compartilhando a tela do navegad
    - O que eu vou mostrar aqui é o resultado da nossa Fase 5 e as correções críticas que aplicamos na Fase 6. O nosso objetivo foi pegar aquelas personas, o João e a Camila, e dar a eles a autonomia que o app original não dava.
    - Eu vou navegar pelos três fluxos principais que redesenhamos: a Criação de Repositório, o Upload de Arquivos e a Filtragem de Notificações. Vamos lá."
 - Ação: manter a tela inicial do protótipo já carregada.
+- Mostrar brevemente um print/vídeo do app original para reforçar o estado "somente leitura" antes de mudar para o protótipo.
 
 ## 2. Fluxo 1 — Criação de repositório (0:45 - 2:00)
 - Texto sugerido:
@@ -15,6 +16,7 @@ Tempo estimado total: **5 a 6 minutos**. Gravar compartilhando a tela do navegad
    - No app original, essa função simplesmente não existia. Aqui no protótipo, nós trouxemos esse botão 'Novo Repositório' para um lugar de destaque, logo abaixo da barra de busca, além do menu superior."
 - Ações na tela:
    - Mostrar a tela inicial.
+   - Caso possível, colocar lado a lado (ou rapidamente alternar) com o app original que não tinha o botão.
    - Clicar em "Novo Repositório" (botão tracejado ou ícone +).
    - Preencher campos: Owner, nome `projeto-ihc-final`, visibilidade.
    - Clicar em "Create Repository".
@@ -30,6 +32,7 @@ Tempo estimado total: **5 a 6 minutos**. Gravar compartilhando a tela do navegad
 - Ações na tela:
    - Entrar no repositório criado (ou `mobile-app`) e abrir a aba "Arquivos".
    - Apontar cursor para o botão `+` no topo.
+   - Antes de clicar, mostrar captura ou trecho do app original onde o botão ficava "abaixo da dobra" (ou inexistente).
    - Clicar no botão, escolher arquivo fictício (ex.: `hotfix.md`) e confirmar envio.
 - Texto ao finalizar:
    - "Vejam a diferença: o botão está visível imediatamente. Eu clico, seleciono o arquivo e envio. Sem rolagem, sem procura, sem erro."
@@ -40,6 +43,7 @@ Tempo estimado total: **5 a 6 minutos**. Gravar compartilhando a tela do navegad
    - Aqui na aba de notificações, implementamos filtros visuais claros. Se eu sou o João e quero saber onde meu professor me citou, eu clico direto em 'Mencionado'."
 - Ações na tela:
    - Abrir aba de notificações (ícone de sino).
+   - Exibir rapidamente como a lista se apresentava no app original sem filtros claros.
    - Clicar no filtro "Mencionado" e mostrar a lista filtrada.
 - Texto de fechamento:
    - "Isso limpa a interface e permite que o usuário foque no que é urgente.
