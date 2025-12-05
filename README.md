@@ -1,42 +1,50 @@
-# Protótipo GitHub Mobile
+# Protótipo — IHC (4º período)
 
-Heurísticas de colaboração em um modelo reduzido do GitHub Mobile, desenvolvido na disciplina de Interação Humano-Computador para testar fluxos críticos em campo.
+Protótipo interativo do aplicativo **GitHub Mobile** adaptado para a disciplina de Interação Humano-Computador (4º período). A versão 2.0 reproduz a experiência móvel com navegação completa, feedbacks visuais e fluxos críticos para testes moderados de usabilidade antes do desenvolvimento final.
 
-## 📌 Objetivos
-- Investigar se a navegação entre abas, subabas e breadcrumbs se mantém clara em contexto mobile.
-- Validar a execução de tarefas essenciais: criação de repositório, revisão de pull request, upload rápido e filtragem de notificações.
-- Levantar evidências qualitativas para priorizar ajustes de naming, feedback visual e disposição de ações.
+Descrição
+- Protótipo de alta fidelidade desenvolvido como entrega avaliativa da disciplina.
+- Objetivo: validar fluxo de interação, usabilidade e hierarquia visual do GitHub Mobile.
+- Cobertura: tela inicial, lista de repositórios, detalhes de PRs, notificações, exploração e perfil.
 
-## 🗂 Estrutura
-- `index.html`: shell único com HTML+CSS+JS incorporados para facilitar avaliação rápida.
-- `Protótipo newgit/`: versão modular com assets separados (`index.html`, `style.css`, `script.js`).
-- `teste-usabilidade.md`: roteiro completo (hipóteses, tarefas, métricas e análise).
-- `docs/`: kit de sessão (planilha de métricas, script de moderação, checklist, equipe).
-- `img/`: screenshots e elementos visuais usados no protótipo.
 
-## ▶️ Como rodar
-1. Abrir `index.html` no navegador (Chrome/Edge/Firefox).
-2. Ativar modo responsivo (390x844) para simular o dispositivo alvo.
-3. Percorrer os fluxos sinalizados no roteiro de testes (Tarefas 1–5).
+Status
+- Estado atual: protótipo funcional em HTML/CSS/JS estático.
+- Principais entregáveis: telas navegáveis, histórico de navegação, cenários de uso e roteiro de testes.
 
-## 🔁 Fluxos cobertos
-- Criar repositório com confirmação visual e atalho para detalhes.
-- Revisar PR com formulário de comentário, breadcrumbs contextuais e toast de sucesso.
-- Upload fictício de arquivo com persistência em `localStorage` e lista atualizada.
-- Priorizar notificações aplicando filtros segmentados (Inbox, Participando, Mencionado, Repositório).
+Recursos principais
+- Navegação superior dinâmica e barra inferior com estado ativo por tela.
+- Criação de repositório simulada com persistência temporária via `localStorage` e feedback toast.
+- Visualização de PRs, arquivos, notificações e filtros segmentados.
+- Modais/sheets para conta, busca, uploads e configurações.
+- Pontos de avaliação de usabilidade: tempo, erros e satisfação.
 
-## 🧪 Testes de usabilidade
-- Sessões moderadas com estudantes e devs intermediários em Git.
-- Métricas coletadas: sucesso, tempo, severidade, falas críticas, NASA-TLX pós-tarefa.
-- Referência cruzada com arquivos em `docs/` para replicar ou revisar boas práticas.
+Tecnologias utilizadas
+- HTML, CSS e JavaScript puros (sem frameworks) no arquivo raiz `index.html`.
+- Versão modular em `Protótipo newgit/` com `style.css` e `script.js` separados para facilitar refactors.
+- Assets complementares em `img/`.
 
-## 🤝 Contribuidores
-- [Fernando Alves](https://github.com/FernandoAlves049)
-- [Felipe Montalvão](https://github.com/Felipemonrod)
-- [Victor Hugo](https://github.com/TempestOFC)
-<<<<<<< HEAD
-- [henrique]
-=======
-- henrique
->>>>>>> 903297eb3a8c2659872c4359efbc84d08f3696b0
+Como abrir / executar
+- Abra `index.html` diretamente no navegador para experimentar a versão monolítica.
+- Opcional: execute `python -m http.server 8000` e acesse `http://localhost:8000` para testar em servidor local.
+- Para a versão modular, abra `Protótipo newgit/index.html` após garantir sincronização dos assets.
+
+Estrutura do repositório
+- `index.html` — versão completa com CSS/JS inline (fonte de verdade para sincronizações).
+- `Protótipo newgit/` — versão modular com assets separados.
+- `img/` — imagens utilizadas no protótipo.
+- `teste-usabilidade.md` — roteiro para sessões de avaliação.
+- `README.md` — documentação geral do projeto.
+
+Roteiro de avaliação sugerido
+1. Definir tarefas representativas (ex.: criar repositório, revisar PR, filtrar notificações).
+2. Medir tempo e número de interações necessárias para concluir cada tarefa.
+3. Registrar erros, pontos de confusão e comentários espontâneos.
+4. Coletar feedback qualitativo sobre clareza visual e satisfação.
+5. Consolidar achados no `teste-usabilidade.md` e iterar no protótipo.
+
+Contribuição
+- Abra issues para problemas, sugestões ou resultados de testes.
+- Submeta pull requests explicando alterações e impactos na experiência do usuário.
+- Mantenha histórico de versões e notas de usabilidade (ex.: registro da versão 2.0 modular).
 
